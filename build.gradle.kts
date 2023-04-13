@@ -25,10 +25,10 @@ dependencies {
     runtimeOnly("com.h2database:h2")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
-    implementation("org.springframework.boot:spring-boot-starter-validation:3.0.5")
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator
-    implementation("org.springframework.boot:spring-boot-starter-actuator:3.0.5")
+    implementation("org.springframework.boot:spring-boot-starter-validation:3.0.5") // Validator
+    implementation("org.springframework.boot:spring-boot-starter-actuator:3.0.5") // Actuator
+    implementation("org.springframework.boot:spring-boot-starter-logging:3.0.5") // Logging
+    implementation("org.springframework.boot:spring-boot-starter-hateoas:3.0.5") // Hateoas
 
 }
 
