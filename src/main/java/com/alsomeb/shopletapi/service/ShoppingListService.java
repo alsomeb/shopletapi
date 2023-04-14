@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ShoppingListService {
     List<ShoppingList> getAllShoppingLists();
-    List<ShoppingList> getListsOrderByDateDesc();
+    List<ShoppingList> getListsOrderByDateAsc();
     ShoppingList getById(long id);
 }

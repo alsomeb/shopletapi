@@ -27,7 +27,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
     }
 
     @Override
-    public List<ShoppingList> getListsOrderByDateDesc() {
+    public List<ShoppingList> getListsOrderByDateAsc() {
         return shoppingListRepository.findAll().stream()
                 .sorted(Comparator.comparing(ShoppingList::getAdded))
                 .collect(Collectors.toList());

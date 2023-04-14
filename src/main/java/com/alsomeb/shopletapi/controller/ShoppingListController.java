@@ -35,9 +35,9 @@ public class ShoppingListController {
         return new ResponseEntity<>(shoppingListService.getAllShoppingLists(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "sort", params = "order=desc")
-    public ResponseEntity<List<ShoppingList>> getAllShoppingListsOrderDateDesc() {
-        return new ResponseEntity<>(shoppingListService.getListsOrderByDateDesc(), HttpStatus.OK);
+    @GetMapping(value = "sort", params = "order=asc")
+    public ResponseEntity<List<ShoppingList>> getAllShoppingListsOrderDateAsc() {
+        return new ResponseEntity<>(shoppingListService.getListsOrderByDateAsc(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")

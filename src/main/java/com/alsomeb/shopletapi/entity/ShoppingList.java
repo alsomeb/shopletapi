@@ -23,9 +23,9 @@ public class ShoppingList {
     @GeneratedValue
     private Long id;
 
-    @NotEmpty
+    @NotEmpty(message = "Description is mandatory")
     private String description;
 
-    @FutureOrPresent
+    @FutureOrPresent(message = "date added must be present or in the future")
     private LocalDate added;
 }

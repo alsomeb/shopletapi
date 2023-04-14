@@ -52,10 +52,10 @@ class ShopletapiApplicationTests {
         shoppingListRepository.saveAll(testList);
 
         // when
-        var resultList = shoppingListService.getListsOrderByDateDesc();
-        LocalDate targetDateAsc1 = resultList.get(0).getAdded();
-        LocalDate targetDateAsc2 = resultList.get(1).getAdded();
-        LocalDate targetDateAsc3 = resultList.get(2).getAdded();
+        var resultList = shoppingListService.getListsOrderByDateAsc();
+        LocalDate targetDateAsc1 = testList.get(2).getAdded();
+        LocalDate targetDateAsc2 = testList.get(1).getAdded();
+        LocalDate targetDateAsc3 = testList.get(0).getAdded();
         System.out.println(resultList);
 
         // then
