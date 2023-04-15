@@ -24,10 +24,14 @@ import java.time.LocalDate;
 @ExtendWith(MockitoExtension.class)
 class ShopletapiApplicationTests {
 
-    // Only Unit test, mock
+    // @Mock creates a mock repository and its behaviour using when() and thenReturn() method.
+
+    // The tested class should be annotated with "InjectMocks", this tells Mockito which class to inject mocks into.
+    // @InjectMock creates an instance of the class and injects the mocks that are marked with the annotations @Mock into it.
     @Mock
     private ShoppingListRepository shoppingListRepository;
 
+    // this will be injected into shoppingListRepository
     @InjectMocks
     private ShoppingListServiceImpl underTest;
 
