@@ -38,4 +38,9 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         return shoppingListRepository.findById(id)
                 .orElseThrow(() -> new ShoppingListNotFoundException("Cant find ShoppingList with id: " + id));
     }
+
+    @Override
+    public ShoppingList save(ShoppingList shoppingList) {
+        return shoppingListRepository.save(shoppingList);
+    }
 }

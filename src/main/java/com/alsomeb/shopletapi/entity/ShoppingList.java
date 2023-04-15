@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +27,7 @@ public class ShoppingList {
     @NotEmpty(message = "Description is mandatory")
     private String description;
 
+    @NotNull(message = "missing date field 'added'")
     @FutureOrPresent(message = "date added must be present or in the future")
     private LocalDate added;
 }
