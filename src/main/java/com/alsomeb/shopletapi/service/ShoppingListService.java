@@ -8,6 +8,6 @@ public interface ShoppingListService {
     List<ShoppingList> getAllShoppingLists();
     List<ShoppingList> getListsOrderByDateAsc();
     ShoppingList getById(long id);
-
     ShoppingList save(ShoppingList ShoppingList);
+    boolean deleteById(long id);
 }

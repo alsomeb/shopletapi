@@ -1,6 +1,7 @@
 package com.alsomeb.shopletapi.controller;
 
 import com.alsomeb.shopletapi.entity.ShoppingList;
+import com.alsomeb.shopletapi.service.DeleteResponse;
 import com.alsomeb.shopletapi.service.ShoppingListService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -64,5 +65,11 @@ public class ShoppingListController {
         logger.info("POST Shoppinglist: {}", savedList);
 
         return new ResponseEntity<>(location, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<DeleteResponse> deleteListById(@PathVariable long id) {
+        boolean deleted = shoppingListService.deleteById(id);
+        return new ResponseEntity<>(new DeleteResponse(deleted), HttpStatus.OK);
     }
 }

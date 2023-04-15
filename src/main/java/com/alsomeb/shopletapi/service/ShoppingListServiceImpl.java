@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,5 +43,15 @@ public class ShoppingListServiceImpl implements ShoppingListService {
     @Override
     public ShoppingList save(ShoppingList shoppingList) {
         return shoppingListRepository.save(shoppingList);
+    }
+
+    @Override
+    public boolean deleteById(long id) {
+        Optional<ShoppingList> match = shoppingListRepository.findById(id);
+        if(match.isPresent()) {
+            shoppingListRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
