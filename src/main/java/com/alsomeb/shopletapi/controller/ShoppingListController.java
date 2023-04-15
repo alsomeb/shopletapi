@@ -61,6 +61,8 @@ public class ShoppingListController {
                 .buildAndExpand(savedList.getId())
                 .toUri();
 
+        logger.info("POST Shoppinglist: {}", savedList);
+
         return new ResponseEntity<>(location, HttpStatus.CREATED);
     }
 }
