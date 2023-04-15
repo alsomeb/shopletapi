@@ -54,4 +54,9 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         }
         return false;
     }
+
+    @Override
+    public boolean doesListExist(ShoppingList shoppingList) {
+        return shoppingListRepository.existsById(shoppingList.getId());
+    }
 }

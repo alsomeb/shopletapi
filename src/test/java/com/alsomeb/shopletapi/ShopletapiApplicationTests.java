@@ -2,79 +2,54 @@ package com.alsomeb.shopletapi;
 
 import com.alsomeb.shopletapi.entity.ShoppingList;
 import com.alsomeb.shopletapi.repository.ShoppingListRepository;
-import com.alsomeb.shopletapi.service.ShoppingListService;
+import com.alsomeb.shopletapi.service.ShoppingListServiceImpl;
 import org.junit.jupiter.api.Test;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
-import java.util.List;
 
-@SpringBootTest
+
+// Guide for this
+// https://www.youtube.com/watch?v=HmRVrAT4uA0&list=PLMVHTRBusikoEW-dVLcBJrdGQ3A9Eydj_&index=10&t=3083s
+
+@ExtendWith(MockitoExtension.class)
 class ShopletapiApplicationTests {
 
-
-    @Autowired
+    // Only Unit test, mock
+    @Mock
     private ShoppingListRepository shoppingListRepository;
 
-    @Autowired
-    private ShoppingListService shoppingListService;
+    @InjectMocks
+    private ShoppingListServiceImpl underTest;
 
-    @Test
-    public void testSortOrderDescWorksAsIntended() {
-        // Given
-        var testList = List.of(
-                ShoppingList.builder()
-                        .id(1L)
-                        .added(LocalDate.now().plusDays(50))
-                        .description("Test 1")
-                        .build(),
+    @Test // 35.58
+    public void testShoppingListIsSaved() {
+        ShoppingList shoppingList = ShoppingList.builder()
+                .id(1L)
+                .added(LocalDate.now())
+                .description("Alex")
+                .build();
 
-                ShoppingList.builder()
-                        .id(2L)
-                        .added(LocalDate.now().plusDays(20))
-                        .description("Test 2")
-                        .build(),
+        ShoppingList expectedList = ShoppingList.builder()
+                .id(1L)
+                .added(LocalDate.now())
+                .description("Alex")
+                .build();
 
-                ShoppingList.builder()
-                        .id(3L)
-                        .added(LocalDate.now().plusDays(10))
-                        .description("Test 3")
-                        .build()
-        );
+        when(shoppingListRepository.save(eq(shoppingList))).thenReturn(shoppingList);
 
-        shoppingListRepository.saveAll(testList);
-
-        // when
-        var resultList = shoppingListService.getListsOrderByDateAsc();
-        LocalDate targetDateAsc1 = testList.get(2).getAdded();
-        LocalDate targetDateAsc2 = testList.get(1).getAdded();
-        LocalDate targetDateAsc3 = testList.get(0).getAdded();
-        System.out.println(resultList);
-
-        // then
-        assertThat(resultList)
-                .hasSize(3)
-                .doesNotContainNull();
-
-        assertThat(resultList.get(0))
-                .extracting(ShoppingList::getAdded)
-                .isEqualTo(targetDateAsc1);
-
-        assertThat(resultList.get(1))
-                .extracting(ShoppingList::getAdded)
-                .isEqualTo(targetDateAsc2);
-
-        assertThat(resultList.get(2))
-                .extracting(ShoppingList::getAdded)
-                .isEqualTo(targetDateAsc3);
-
+        final ShoppingList result = underTest.save(shoppingList);
+        assertThat(result)
+                .isEqualTo(expectedList);
     }
 
 }

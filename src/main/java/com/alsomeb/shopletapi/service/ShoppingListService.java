@@ -10,4 +10,5 @@ public interface ShoppingListService {
     ShoppingList getById(long id);
     ShoppingList save(ShoppingList ShoppingList);
     boolean deleteById(long id);
+    boolean doesListExist(ShoppingList shoppingList);
 }

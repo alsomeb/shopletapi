@@ -72,4 +72,26 @@ public class ShoppingListController {
         boolean deleted = shoppingListService.deleteById(id);
         return new ResponseEntity<>(new DeleteResponse(deleted), HttpStatus.OK);
     }
+
+
+    @PutMapping("{id}")
+    public ResponseEntity<URI> updateList(@Valid @RequestBody ShoppingList shoppingList, @PathVariable long id) {
+        shoppingList.setId(id);
+        final boolean exist = shoppingListService.doesListExist(shoppingList);
+        final ShoppingList savedList = shoppingListService.save(shoppingList);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .buildAndExpand(savedList.getId())
+                .toUri();
+
+        if(exist) {
+            logger.info("UPDATED Shoppinglist: {}", savedList);
+            return new ResponseEntity<>(location, HttpStatus.OK);
+        }
+
+        logger.info("POST Shoppinglist: {}", savedList);
+        return new ResponseEntity<>(location, HttpStatus.CREATED);
+    }
+
 }
