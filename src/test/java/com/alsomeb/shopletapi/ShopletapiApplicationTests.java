@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 
 
-// Guide for this
+// Guide, still learning Mocking
 // https://www.youtube.com/watch?v=HmRVrAT4uA0&list=PLMVHTRBusikoEW-dVLcBJrdGQ3A9Eydj_&index=10&t=3083s
 
 @ExtendWith(MockitoExtension.class)
@@ -31,7 +31,7 @@ class ShopletapiApplicationTests {
     @InjectMocks
     private ShoppingListServiceImpl underTest;
 
-    @Test // 35.58
+    @Test // 35.58 in video
     public void testShoppingListIsSaved() {
         ShoppingList shoppingList = ShoppingList.builder()
                 .id(1L)
