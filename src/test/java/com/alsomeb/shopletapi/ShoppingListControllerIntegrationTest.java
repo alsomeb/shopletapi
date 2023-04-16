@@ -14,8 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.format.DateTimeFormatter;
+
 import static com.alsomeb.shopletapi.TestData.testShoppingListEntity;
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -52,20 +53,15 @@ public class ShoppingListControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                         .content(bookJSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
-                // Creates a matcher that matches if the examined String contains the specified String anywhere.
-                .andExpect(content().string(containsString("api/shoppinglists/1")));
-
-
-
-
-                /*.andExpect(MockMvcResultMatchers.jsonPath(
+                .andExpect(MockMvcResultMatchers.jsonPath(
                         "$.id").value(shoppingList.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath(
                         "$.description").value(shoppingList.getDescription()))
                 .andExpect(MockMvcResultMatchers.jsonPath(
-                        "$.added").value(shoppingList.getAdded()));*/
+                        "$.added").value(shoppingList.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
 
-
+        // Creates a matcher that matches if the examined String contains the specified String anywhere.
+        //.andExpect(content().string(containsString("api/shoppinglists/1")));
 
     }
 }

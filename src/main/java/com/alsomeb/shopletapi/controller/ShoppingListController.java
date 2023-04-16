@@ -11,9 +11,8 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
+
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -51,20 +50,19 @@ public class ShoppingListController {
                 linkTo(methodOn(ShoppingListController.class).getAllShoppingLists()).withRel("all-lists"));
     }
 
+    // HATEOAS impl
     @PostMapping
-    public ResponseEntity<URI> addList(@Valid @RequestBody ShoppingList shoppingList) {
+    public ResponseEntity<EntityModel<ShoppingList>> addList(@Valid @RequestBody ShoppingList shoppingList) {
         // När vi post så får vi tbx en länk till resource som skapats.
         ShoppingList savedList = shoppingListService.save(shoppingList);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedList.getId())
-                .toUri();
+        EntityModel<ShoppingList> entityModel = EntityModel.of(shoppingList,
+                linkTo(methodOn(ShoppingListController.class).getShoppingListById(savedList.getId())).withSelfRel(),
+                linkTo(methodOn(ShoppingListController.class).getAllShoppingLists()).withRel("all-lists"));
 
         logger.info("POST Shoppinglist: {}", savedList);
 
-        return new ResponseEntity<>(location, HttpStatus.CREATED);
+        return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
     }
 
     @DeleteMapping("{id}")
@@ -74,24 +72,25 @@ public class ShoppingListController {
     }
 
 
+    // HATEOS Impl
     @PutMapping("{id}")
-    public ResponseEntity<URI> updateList(@Valid @RequestBody ShoppingList shoppingList, @PathVariable long id) {
-        shoppingList.setId(id);
+    public ResponseEntity<EntityModel<ShoppingList>> updateList(@Valid @RequestBody ShoppingList shoppingList, @PathVariable long id) {
+        shoppingList.setId(id); // Id används för update, spelar ingen roll om resource inte finns pga databasen har senaste ID sequence när den skapar NY
+
         final boolean exist = shoppingListService.doesListExist(shoppingList);
         final ShoppingList savedList = shoppingListService.save(shoppingList);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .buildAndExpand(savedList.getId())
-                .toUri();
+        EntityModel<ShoppingList> entityModel = EntityModel.of(shoppingList,
+                linkTo(methodOn(ShoppingListController.class).getShoppingListById(savedList.getId())).withSelfRel(),
+                linkTo(methodOn(ShoppingListController.class).getAllShoppingLists()).withRel("all-lists"));
 
         if(exist) {
             logger.info("UPDATED Shoppinglist: {}", savedList);
-            return new ResponseEntity<>(location, HttpStatus.OK);
+            return new ResponseEntity<>(entityModel, HttpStatus.OK);
         }
 
         logger.info("POST Shoppinglist: {}", savedList);
-        return new ResponseEntity<>(location, HttpStatus.CREATED);
+        return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
     }
 
 }
