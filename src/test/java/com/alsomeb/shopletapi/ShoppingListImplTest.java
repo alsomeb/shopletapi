@@ -1,6 +1,7 @@
 package com.alsomeb.shopletapi;
 
 import com.alsomeb.shopletapi.entity.ShoppingList;
+import com.alsomeb.shopletapi.exception.ShoppingListNotFoundException;
 import com.alsomeb.shopletapi.repository.ShoppingListRepository;
 import com.alsomeb.shopletapi.service.ShoppingListServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 
 // Guide, still learning Mocking
@@ -51,6 +53,34 @@ class ShoppingListImplTest {
         final ShoppingList result = underTest.save(shoppingList);
         assertThat(result)
                 .isEqualTo(expectedList);
+    }
+
+    @Test
+    public void testFindListByIdThrowsExceptionIfNoneFind() {
+        final long targetId = 1L;
+        when(shoppingListRepository.findById(eq(targetId))).thenThrow(ShoppingListNotFoundException.class);
+        assertThatThrownBy(() -> underTest.getById(targetId))
+                .isInstanceOf(ShoppingListNotFoundException.class);
+    }
+
+    @Test
+    public void testFindListByIdReturnsCorrectBookIfExists() {
+        final long targetId = 1L;
+
+        // Optional.Of() == Returns an Optional describing the given non-null value
+        when(shoppingListRepository.findById(eq(targetId))).thenReturn(Optional.of(testShoppingListEntity()));
+
+        final ShoppingList result = underTest.getById(targetId);
+        final ShoppingList expected = ShoppingList.builder()
+                .id(targetId)
+                .description("Test")
+                .added(LocalDate.now())
+                .build();
+
+        assertThat(result)
+                .isNotNull()
+                .isEqualTo(expected);
+
     }
 
 }
