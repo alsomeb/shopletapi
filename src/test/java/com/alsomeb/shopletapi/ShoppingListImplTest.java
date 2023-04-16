@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import static com.alsomeb.shopletapi.TestData.testShoppingListEntity;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -22,7 +23,7 @@ import java.time.LocalDate;
 // https://www.youtube.com/watch?v=HmRVrAT4uA0&list=PLMVHTRBusikoEW-dVLcBJrdGQ3A9Eydj_&index=10&t=3083s
 
 @ExtendWith(MockitoExtension.class)
-class ShopletapiApplicationTests {
+class ShoppingListImplTest {
 
     // @Mock creates a mock repository and its behaviour using when() and thenReturn() method.
 
@@ -37,16 +38,12 @@ class ShopletapiApplicationTests {
 
     @Test // 35.58 in video
     public void testShoppingListIsSaved() {
-        ShoppingList shoppingList = ShoppingList.builder()
-                .id(1L)
-                .added(LocalDate.now())
-                .description("Alex")
-                .build();
+        ShoppingList shoppingList = testShoppingListEntity();
 
         ShoppingList expectedList = ShoppingList.builder()
                 .id(1L)
                 .added(LocalDate.now())
-                .description("Alex")
+                .description("Test")
                 .build();
 
         when(shoppingListRepository.save(eq(shoppingList))).thenReturn(shoppingList);

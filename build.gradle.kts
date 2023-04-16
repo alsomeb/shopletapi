@@ -29,6 +29,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator:3.0.5") // Actuator
     implementation("org.springframework.boot:spring-boot-starter-logging:3.0.5") // Logging
     implementation("org.springframework.boot:spring-boot-starter-hateoas:3.0.5") // Hateoas
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2")
+
 
 }
 
