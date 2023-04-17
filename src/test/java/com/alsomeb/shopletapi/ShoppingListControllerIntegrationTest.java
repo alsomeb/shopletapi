@@ -64,4 +64,10 @@ public class ShoppingListControllerIntegrationTest {
         //.andExpect(content().string(containsString("api/shoppinglists/1")));
 
     }
+
+    @Test
+    public void testFindByIdReturn404IfShoppingListNotFound() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL.concat("/1")))
+                .andExpect(status().isNotFound());
+    }
 }
