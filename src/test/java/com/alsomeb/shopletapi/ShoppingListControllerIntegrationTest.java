@@ -22,6 +22,10 @@ import java.time.format.DateTimeFormatter;
 import static com.alsomeb.shopletapi.TestData.testShoppingListEntity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+// Kanske kolla på hur vi kan isolera dessa tester att inte förstöra för vår db om vi kör DDL Update på MYSQL
+// Byta till MySql och köra h2 db för dessa tests kanske går?
+// ledtråd: https://www.arhohuttunen.com/spring-boot-integration-testing/
+
 @SpringBootTest
 @AutoConfigureMockMvc // will take care of creating the mock object for us
 @ExtendWith(SpringExtension.class)
@@ -122,5 +126,7 @@ public class ShoppingListControllerIntegrationTest {
     public void clean() {
         shoppingListRepository.deleteAll();
     }
+
+
 
 }
