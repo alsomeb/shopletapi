@@ -12,12 +12,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import static com.alsomeb.shopletapi.TestData.listOfShoppingLists;
 import static com.alsomeb.shopletapi.TestData.testShoppingListEntity;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -81,6 +84,30 @@ class ShoppingListImplTest {
                 .isNotNull()
                 .isEqualTo(expected);
 
+    }
+
+    @Test
+    public void testFindAllShoppingListsReturnsEmptyListWhenNone() {
+        // Mock repository to empty list on return
+        when(shoppingListRepository.findAll()).thenReturn(new ArrayList<>());
+        final var result = underTest.getAllShoppingLists();
+
+        assertThat(result)
+                .hasSize(0);
+    }
+
+    @Test
+    public void testFindAllShoppingListsReturnsListWhenNotEmpty() {
+        final List<ShoppingList> expected = listOfShoppingLists();
+
+        // Mock Repository results with expected list above
+        when(shoppingListRepository.findAll()).thenReturn(expected);
+        final var result = underTest.getAllShoppingLists();
+
+        assertThat(result)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(3);
     }
 
 }

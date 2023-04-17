@@ -1,9 +1,11 @@
 package com.alsomeb.shopletapi;
 
 import com.alsomeb.shopletapi.entity.ShoppingList;
+import com.alsomeb.shopletapi.repository.ShoppingListRepository;
 import com.alsomeb.shopletapi.service.ShoppingListService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,9 @@ public class ShoppingListControllerIntegrationTest {
     @Autowired
     private ShoppingListService shoppingListService;
 
+    @Autowired
+    private ShoppingListRepository shoppingListRepository;
+
     private final String apiRootURL = "/api/shoppinglists";
 
     @Test
@@ -70,6 +75,13 @@ public class ShoppingListControllerIntegrationTest {
     }
 
     @Test
+    public void testThatListShoppingListsReturns200EmptyWhenNothing() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("[]"));
+    }
+
+    @Test
     public void testFindByIdReturn404IfShoppingListNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL.concat("/1")))
                 .andExpect(status().isNotFound());
@@ -77,16 +89,38 @@ public class ShoppingListControllerIntegrationTest {
 
     @Test
     public void testFindByIdReturn200AndShoppingListIfExist() throws Exception {
-        final ShoppingList testList = testShoppingListEntity();
-        shoppingListService.save(testList);
+        final ShoppingList testListInput = testShoppingListEntity();
+        var target = shoppingListService.save(testListInput);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL.concat("/" + testList.getId())))
+        mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL.concat("/" + target.getId())))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(
-                        "$.id").value(testList.getId()))
+                        "$.id").value(target.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath(
-                        "$.description").value(testList.getDescription()))
+                        "$.description").value(target.getDescription()))
                 .andExpect(MockMvcResultMatchers.jsonPath(
-                        "$.added").value(testList.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
+                        "$.added").value(target.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
     }
+
+    @Test
+    public void testThatListShoppingListsReturns200AndListWhenExists() throws Exception {
+        final ShoppingList testListInput = testShoppingListEntity();
+        var target = shoppingListService.save(testListInput);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath(
+                        // $.[0].id == accesses the first element in the list
+                        "$.[0].id").value(target.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath(
+                        "$.[0].description").value(target.getDescription()))
+                .andExpect(MockMvcResultMatchers.jsonPath(
+                        "$.[0].added").value(target.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
+    }
+
+    @BeforeEach
+    public void clean() {
+        shoppingListRepository.deleteAll();
+    }
+
 }
