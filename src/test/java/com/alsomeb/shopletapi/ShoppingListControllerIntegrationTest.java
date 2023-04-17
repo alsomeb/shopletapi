@@ -1,6 +1,7 @@
 package com.alsomeb.shopletapi;
 
 import com.alsomeb.shopletapi.entity.ShoppingList;
+import com.alsomeb.shopletapi.service.ShoppingListService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,9 @@ public class ShoppingListControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ShoppingListService shoppingListService;
+
     private final String apiRootURL = "/api/shoppinglists";
 
     @Test
@@ -69,5 +73,20 @@ public class ShoppingListControllerIntegrationTest {
     public void testFindByIdReturn404IfShoppingListNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL.concat("/1")))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testFindByIdReturn200AndShoppingListIfExist() throws Exception {
+        final ShoppingList testList = testShoppingListEntity();
+        shoppingListService.save(testList);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL.concat("/" + testList.getId())))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath(
+                        "$.id").value(testList.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath(
+                        "$.description").value(testList.getDescription()))
+                .andExpect(MockMvcResultMatchers.jsonPath(
+                        "$.added").value(testList.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
     }
 }
