@@ -3,6 +3,7 @@ package com.alsomeb.shopletapi.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +19,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 @Entity
-public class ShoppingList {
+@Table(name = "shopping_lists")
+public class ShoppingListEntity {
 
     @Id
     @GeneratedValue

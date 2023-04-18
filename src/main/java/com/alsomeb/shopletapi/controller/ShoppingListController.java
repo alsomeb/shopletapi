@@ -1,6 +1,6 @@
 package com.alsomeb.shopletapi.controller;
 
-import com.alsomeb.shopletapi.entity.ShoppingList;
+import com.alsomeb.shopletapi.dto.ShoppingListDto;
 import com.alsomeb.shopletapi.service.DeleteResponse;
 import com.alsomeb.shopletapi.service.ShoppingListService;
 import jakarta.validation.Valid;
@@ -19,7 +19,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("api/shoppinglists")
+@RequestMapping("api/v1/shoppinglists")
 public class ShoppingListController {
 
     private final ShoppingListService shoppingListService;
@@ -31,17 +31,17 @@ public class ShoppingListController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ShoppingList>> getAllShoppingLists() {
+    public ResponseEntity<List<ShoppingListDto>> getAllShoppingLists() {
         return new ResponseEntity<>(shoppingListService.getAllShoppingLists(), HttpStatus.OK);
     }
 
     @GetMapping(value = "sort", params = "order=asc")
-    public ResponseEntity<List<ShoppingList>> getAllShoppingListsOrderDateAsc() {
+    public ResponseEntity<List<ShoppingListDto>> getAllShoppingListsOrderDateAsc() {
         return new ResponseEntity<>(shoppingListService.getListsOrderByDateAsc(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public EntityModel<ShoppingList> getShoppingListById(@PathVariable long id) {
+    public EntityModel<ShoppingListDto> getShoppingListById(@PathVariable long id) {
         var shoppingList = shoppingListService.getById(id);
 
         // Hateoas links
@@ -52,11 +52,11 @@ public class ShoppingListController {
 
     // HATEOAS impl
     @PostMapping
-    public ResponseEntity<EntityModel<ShoppingList>> addList(@Valid @RequestBody ShoppingList shoppingList) {
+    public ResponseEntity<EntityModel<ShoppingListDto>> addList(@Valid @RequestBody ShoppingListDto shoppingListDto) {
         // När vi post så får vi tbx en länk till resource som skapats.
-        ShoppingList savedList = shoppingListService.save(shoppingList);
+        ShoppingListDto savedList = shoppingListService.save(shoppingListDto);
 
-        EntityModel<ShoppingList> entityModel = EntityModel.of(shoppingList,
+        EntityModel<ShoppingListDto> entityModel = EntityModel.of(shoppingListDto,
                 linkTo(methodOn(ShoppingListController.class).getShoppingListById(savedList.getId())).withSelfRel(),
                 linkTo(methodOn(ShoppingListController.class).getAllShoppingLists()).withRel("all-lists"));
 
@@ -74,13 +74,13 @@ public class ShoppingListController {
 
     // HATEOS Impl
     @PutMapping("{id}")
-    public ResponseEntity<EntityModel<ShoppingList>> updateList(@Valid @RequestBody ShoppingList shoppingList, @PathVariable long id) {
-        shoppingList.setId(id); // Id används för update, spelar ingen roll om resource inte finns pga databasen har senaste ID sequence när den skapar NY
+    public ResponseEntity<EntityModel<ShoppingListDto>> updateList(@Valid @RequestBody ShoppingListDto shoppingListDto, @PathVariable long id) {
+        shoppingListDto.setId(id); // Id används för update, spelar ingen roll om resource inte finns pga databasen har senaste ID sequence när den skapar NY
 
-        final boolean exist = shoppingListService.doesListExist(shoppingList);
-        final ShoppingList savedList = shoppingListService.save(shoppingList);
+        final boolean exist = shoppingListService.doesListExist(shoppingListDto);
+        final ShoppingListDto savedList = shoppingListService.save(shoppingListDto);
 
-        EntityModel<ShoppingList> entityModel = EntityModel.of(shoppingList,
+        EntityModel<ShoppingListDto> entityModel = EntityModel.of(shoppingListDto,
                 linkTo(methodOn(ShoppingListController.class).getShoppingListById(savedList.getId())).withSelfRel(),
                 linkTo(methodOn(ShoppingListController.class).getAllShoppingLists()).withRel("all-lists"));
 

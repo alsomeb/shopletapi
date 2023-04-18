@@ -1,4 +1,4 @@
 package com.alsomeb.shopletapi.entity;
 
-public class Product {
+public class ProductEntity {
 }

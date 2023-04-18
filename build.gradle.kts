@@ -22,15 +22,15 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     compileOnly("org.projectlombok:lombok")
-    runtimeOnly("com.h2database:h2")
+    //runtimeOnly("com.h2database:h2")
+    runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.springframework.boot:spring-boot-starter-validation:3.0.5") // Validator
     implementation("org.springframework.boot:spring-boot-starter-actuator:3.0.5") // Actuator
     implementation("org.springframework.boot:spring-boot-starter-logging:3.0.5") // Logging
     implementation("org.springframework.boot:spring-boot-starter-hateoas:3.0.5") // Hateoas
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2") // För att Serialisera LocalDateTime
 
 
 }

@@ -1,10 +1,12 @@
-package com.alsomeb.shopletapi;
+package com.alsomeb.shopletapi.controllers;
 
-import com.alsomeb.shopletapi.entity.ShoppingList;
+import com.alsomeb.shopletapi.dto.ShoppingListDto;
+import com.alsomeb.shopletapi.entity.ShoppingListEntity;
 import com.alsomeb.shopletapi.repository.ShoppingListRepository;
 import com.alsomeb.shopletapi.service.ShoppingListService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.format.DateTimeFormatter;
 
+import static com.alsomeb.shopletapi.TestData.testShoppingListDTO;
 import static com.alsomeb.shopletapi.TestData.testShoppingListEntity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -29,7 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc // will take care of creating the mock object for us
 @ExtendWith(SpringExtension.class)
-public class ShoppingListControllerIntegrationTest {
+@Transactional // roll back any changes after tests
+public class ShoppingListEntityControllerIntegrationTest {
 
     // MockMVC allows us to test the API as if we were calling it
     // We starts up the entire application and hitting the rest api endpoints
@@ -49,17 +53,17 @@ public class ShoppingListControllerIntegrationTest {
     @Autowired
     private ShoppingListRepository shoppingListRepository;
 
-    private final String apiRootURL = "/api/shoppinglists";
+    private final String apiRootURL = "/api/v1/shoppinglists";
 
     @Test
     public void testThatShoppingListIsCreated() throws Exception {
-        final ShoppingList shoppingList = testShoppingListEntity();
+        final ShoppingListEntity shoppingListEntity = testShoppingListEntity();
 
         // In Order to get the JSON from the book we can use
         // Serialize dates: https://howtodoinjava.com/jackson/java-8-date-time-type-not-supported-by-default/
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule()); // Dependency for serializing LocalDateTime
-        final String bookJSON = objectMapper.writeValueAsString(shoppingList);
+        final String bookJSON = objectMapper.writeValueAsString(shoppingListEntity);
 
         // value() == Evaluate the JSON path expression against the response content and assert that the result is equal to the supplied value.
         mockMvc.perform(MockMvcRequestBuilders.post(apiRootURL)
@@ -67,11 +71,11 @@ public class ShoppingListControllerIntegrationTest {
                         .content(bookJSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath(
-                        "$.id").value(shoppingList.getId()))
+                        "$.id").value(shoppingListEntity.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath(
-                        "$.description").value(shoppingList.getDescription()))
+                        "$.description").value(shoppingListEntity.getDescription()))
                 .andExpect(MockMvcResultMatchers.jsonPath(
-                        "$.added").value(shoppingList.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
+                        "$.added").value(shoppingListEntity.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
 
         // Creates a matcher that matches if the examined String contains the specified String anywhere.
         //.andExpect(content().string(containsString("api/shoppinglists/1")));
@@ -93,8 +97,8 @@ public class ShoppingListControllerIntegrationTest {
 
     @Test
     public void testFindByIdReturn200AndShoppingListIfExist() throws Exception {
-        final ShoppingList testListInput = testShoppingListEntity();
-        var target = shoppingListService.save(testListInput);
+        final ShoppingListDto shoppingListDto = testShoppingListDTO();
+        var target = shoppingListService.save(shoppingListDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL.concat("/" + target.getId())))
                 .andExpect(status().isOk())
@@ -108,8 +112,8 @@ public class ShoppingListControllerIntegrationTest {
 
     @Test
     public void testThatListShoppingListsReturns200AndListWhenExists() throws Exception {
-        final ShoppingList testListInput = testShoppingListEntity();
-        var target = shoppingListService.save(testListInput);
+        final ShoppingListDto shoppingListDto = testShoppingListDTO();
+        var target = shoppingListService.save(shoppingListDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL))
                 .andExpect(status().isOk())
@@ -122,11 +126,14 @@ public class ShoppingListControllerIntegrationTest {
                         "$.[0].added").value(target.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
     }
 
-    @BeforeEach
-    public void clean() {
-        shoppingListRepository.deleteAll();
+    @Test
+    public void testThatGetListsOrderByDateAscReturnsCorrect200() {
+        // Todo..
     }
 
-
+    @BeforeEach
+    public void cleanDb() {
+        shoppingListRepository.deleteAll();
+    }
 
 }

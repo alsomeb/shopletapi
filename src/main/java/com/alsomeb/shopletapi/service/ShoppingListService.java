@@ -1,14 +1,14 @@
 package com.alsomeb.shopletapi.service;
 
-import com.alsomeb.shopletapi.entity.ShoppingList;
+import com.alsomeb.shopletapi.dto.ShoppingListDto;
 
 import java.util.List;
 
 public interface ShoppingListService {
-    List<ShoppingList> getAllShoppingLists();
-    List<ShoppingList> getListsOrderByDateAsc();
-    ShoppingList getById(long id);
-    ShoppingList save(ShoppingList ShoppingList);
+    List<ShoppingListDto> getAllShoppingLists();
+    List<ShoppingListDto> getListsOrderByDateAsc();
+    ShoppingListDto getById(long id);
+    ShoppingListDto save(ShoppingListDto shoppingListDto);
     boolean deleteById(long id);
-    boolean doesListExist(ShoppingList shoppingList);
+    boolean doesListExist(ShoppingListDto shoppingListDto);
 }

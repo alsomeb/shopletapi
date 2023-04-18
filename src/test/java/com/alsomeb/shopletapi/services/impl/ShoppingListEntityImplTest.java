@@ -1,9 +1,10 @@
-package com.alsomeb.shopletapi;
+package com.alsomeb.shopletapi.services.impl;
 
-import com.alsomeb.shopletapi.entity.ShoppingList;
+import com.alsomeb.shopletapi.dto.ShoppingListDto;
+import com.alsomeb.shopletapi.entity.ShoppingListEntity;
 import com.alsomeb.shopletapi.exception.ShoppingListNotFoundException;
 import com.alsomeb.shopletapi.repository.ShoppingListRepository;
-import com.alsomeb.shopletapi.service.ShoppingListServiceImpl;
+import com.alsomeb.shopletapi.service.impl.ShoppingListServiceImpl;
 import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,8 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
-import static com.alsomeb.shopletapi.TestData.listOfShoppingLists;
-import static com.alsomeb.shopletapi.TestData.testShoppingListEntity;
+import static com.alsomeb.shopletapi.TestData.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -28,7 +28,7 @@ import java.util.Optional;
 // https://www.youtube.com/watch?v=HmRVrAT4uA0&list=PLMVHTRBusikoEW-dVLcBJrdGQ3A9Eydj_&index=10&t=3083s
 
 @ExtendWith(MockitoExtension.class)
-class ShoppingListImplTest {
+class ShoppingListEntityImplTest {
 
     // @Mock creates a mock repository and its behaviour using when() and thenReturn() method.
 
@@ -43,19 +43,14 @@ class ShoppingListImplTest {
 
     @Test // 35.58 in video
     public void testShoppingListIsSaved() {
-        ShoppingList shoppingList = testShoppingListEntity();
+        ShoppingListEntity shoppingListEntity = testShoppingListEntity();
+        ShoppingListDto shoppingListDto = testShoppingListDTO();
 
-        ShoppingList expectedList = ShoppingList.builder()
-                .id(1L)
-                .added(LocalDate.now())
-                .description("Test")
-                .build();
+        when(shoppingListRepository.save(eq(shoppingListEntity))).thenReturn(shoppingListEntity);
 
-        when(shoppingListRepository.save(eq(shoppingList))).thenReturn(shoppingList);
-
-        final ShoppingList result = underTest.save(shoppingList);
+        final ShoppingListDto result = underTest.save(shoppingListDto);
         assertThat(result)
-                .isEqualTo(expectedList);
+                .isEqualTo(shoppingListDto);
     }
 
     @Test
@@ -73,8 +68,8 @@ class ShoppingListImplTest {
         // Optional.Of() == Returns an Optional describing the given non-null value
         when(shoppingListRepository.findById(eq(targetId))).thenReturn(Optional.of(testShoppingListEntity()));
 
-        final ShoppingList result = underTest.getById(targetId);
-        final ShoppingList expected = ShoppingList.builder()
+        final ShoppingListDto result = underTest.getById(targetId);
+        final ShoppingListDto expected = ShoppingListDto.builder()
                 .id(targetId)
                 .description("Test")
                 .added(LocalDate.now())
@@ -98,7 +93,7 @@ class ShoppingListImplTest {
 
     @Test
     public void testFindAllShoppingListsReturnsListWhenNotEmpty() {
-        final List<ShoppingList> expected = listOfShoppingLists();
+        final List<ShoppingListEntity> expected = listOfShoppingLists();
 
         // Mock Repository results with expected list above
         when(shoppingListRepository.findAll()).thenReturn(expected);
@@ -108,6 +103,11 @@ class ShoppingListImplTest {
                 .isNotNull()
                 .isNotEmpty()
                 .hasSize(3);
+    }
+
+    @Test
+    public void testThatGetListsOrderByDateAscReturnsCorrect() {
+        // Todo..
     }
 
 }

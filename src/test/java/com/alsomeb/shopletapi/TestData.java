@@ -1,6 +1,7 @@
 package com.alsomeb.shopletapi;
 
-import com.alsomeb.shopletapi.entity.ShoppingList;
+import com.alsomeb.shopletapi.dto.ShoppingListDto;
+import com.alsomeb.shopletapi.entity.ShoppingListEntity;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,31 +12,39 @@ public final class TestData {
 
     private TestData() {}
 
-    public static ShoppingList testShoppingListEntity() {
-        return ShoppingList.builder()
+    public static ShoppingListEntity testShoppingListEntity() {
+        return ShoppingListEntity.builder()
                 .id(1L)
                 .added(LocalDate.now())
                 .description("Test")
                 .build();
     }
 
-    public static List<ShoppingList> listOfShoppingLists() {
+    public static ShoppingListDto testShoppingListDTO() {
+        return ShoppingListDto.builder()
+                .id(1L)
+                .added(LocalDate.now())
+                .description("Test")
+                .build();
+    }
+
+    public static List<ShoppingListEntity> listOfShoppingLists() {
         return List.of(
-                ShoppingList.builder()
+                ShoppingListEntity.builder()
                     .id(1L)
                     .added(LocalDate.now())
                     .description("Test 1")
                     .build(),
 
-                ShoppingList.builder()
+                ShoppingListEntity.builder()
                     .id(2L)
-                    .added(LocalDate.now())
+                    .added(LocalDate.now().plusDays(5))
                     .description("Test 2")
                     .build(),
 
-                ShoppingList.builder()
+                ShoppingListEntity.builder()
                     .id(3L)
-                    .added(LocalDate.now())
+                    .added(LocalDate.now().plusDays(10))
                     .description("Test 3")
                     .build());
 
