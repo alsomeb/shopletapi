@@ -1,4 +1,4 @@
-insert into shopping_list (id, description, added)
+insert into shopping_lists (id, description, added)
 values
 (10001, 'Groceries for dinner with dad', current_date()),
 (10002, 'Buy snacks for the weekend', '2024-08-23'),
