@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc // will take care of creating the mock object for us
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("h2db")
+@Transactional
 public class ShoppingListEntityControllerIntegrationTest {
 
     // MockMVC allows us to test the API as if we were calling it
@@ -62,7 +63,7 @@ public class ShoppingListEntityControllerIntegrationTest {
     private final String apiRootURL = "/api/v1/shoppinglists";
 
     @Test
-    public void testThatShoppingListIsCreated() throws Exception {
+    public void testThatShoppingListIsCreated201() throws Exception {
         final ShoppingListEntity shoppingListEntity = testShoppingListEntity();
 
         // In Order to get the JSON from the book we can use
@@ -86,6 +87,35 @@ public class ShoppingListEntityControllerIntegrationTest {
         // Creates a matcher that matches if the examined String contains the specified String anywhere.
         //.andExpect(content().string(containsString("api/shoppinglists/1")));
 
+    }
+
+    @Test
+    public void testThatShoppingListIsUpdatedReturns200() throws Exception {
+        // Blir utan ID här men vi får id när vi .save() mha Service
+        var dto = ShoppingListDto.builder()
+                .added(LocalDate.now())
+                .description("Test")
+                .build();
+
+        var savedDto = shoppingListService.save(dto);
+
+        // Updated desc
+        savedDto.setDescription("Updated desc");
+
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule()); // Dependency for serializing LocalDateTime
+        final String bookJSON = objectMapper.writeValueAsString(savedDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.put(apiRootURL + "/" + savedDto.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath(
+                        "$.id").value(savedDto.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath(
+                        "$.description").value(savedDto.getDescription()))
+                .andExpect(MockMvcResultMatchers.jsonPath(
+                        "$.added").value(savedDto.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
     }
 
     @Test
@@ -149,7 +179,7 @@ public class ShoppingListEntityControllerIntegrationTest {
                 .build();
 
         final ShoppingListDto random = ShoppingListDto.builder()
-                .id(2L)
+                .id(3L)
                 .added(LocalDate.now().plusDays(5))
                 .description("random")
                 .build();
