@@ -7,6 +7,7 @@ import com.alsomeb.shopletapi.service.ShoppingListService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,22 +21,23 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import static com.alsomeb.shopletapi.TestData.testShoppingListDTO;
-import static com.alsomeb.shopletapi.TestData.testShoppingListEntity;
+
+import static com.alsomeb.shopletapi.TestData.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 // Help: https://www.arhohuttunen.com/spring-boot-integration-testing/
 // Move Properties To a Profile With @ActiveProfiles, we run these tests with an H2 DB instead of PostGre SQL
-// @Transactional - roll back any changes after tests
 
 
 @SpringBootTest
 @AutoConfigureMockMvc // will take care of creating the mock object for us
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("h2db")
+//@Transactional // roll back any changes after tests
 public class ShoppingListEntityControllerIntegrationTest {
 
     // MockMVC allows us to test the API as if we were calling it
@@ -129,9 +131,42 @@ public class ShoppingListEntityControllerIntegrationTest {
                         "$.[0].added").value(target.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
     }
 
+    // Todo.. Delete, PUT
+
     @Test
-    public void testThatGetListsOrderByDateAscReturnsCorrect200() {
-        // Todo..
+    public void testThatGetListsOrderByDateAscReturnsCorrect200() throws Exception {
+        String requestURL = "/api/v1/shoppinglists/sort?order=asc";
+
+        final ShoppingListDto targetFirst = ShoppingListDto.builder()
+                .id(1L)
+                .added(LocalDate.now())
+                .description("First")
+                .build();
+
+        final ShoppingListDto targetLast = ShoppingListDto.builder()
+                .id(2L)
+                .added(LocalDate.now().plusDays(10))
+                .description("Last")
+                .build();
+
+        final ShoppingListDto random = ShoppingListDto.builder()
+                .id(2L)
+                .added(LocalDate.now().plusDays(5))
+                .description("Last")
+                .build();
+
+
+        shoppingListService.save(targetLast);
+        shoppingListService.save(random);
+        shoppingListService.save(targetFirst);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(requestURL))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath(
+                        "$.[0].added").value(targetFirst.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+                .andExpect(MockMvcResultMatchers.jsonPath(
+                        "$.[2].added").value(targetLast.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
+
     }
 
     @BeforeEach

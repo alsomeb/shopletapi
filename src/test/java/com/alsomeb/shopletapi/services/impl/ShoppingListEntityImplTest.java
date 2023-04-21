@@ -105,9 +105,22 @@ class ShoppingListEntityImplTest {
                 .hasSize(3);
     }
 
+    // TODO DeleteById
+
     @Test
     public void testThatGetListsOrderByDateAscReturnsCorrect() {
-        // Todo..
+        List<ShoppingListDto> testListDTO = listOfShoppingListsDTO();
+        List<ShoppingListEntity> mockListEntity = listOfShoppingLists();
+
+        when(shoppingListRepository.findAll()).thenReturn(mockListEntity);
+        final var result = underTest.getListsOrderByDateAsc();
+
+        assertThat(result)
+                .isNotNull()
+                .isNotEmpty();
+
+        assertThat(result.get(0))
+                .isEqualTo(testListDTO.get(0));
     }
 
 }

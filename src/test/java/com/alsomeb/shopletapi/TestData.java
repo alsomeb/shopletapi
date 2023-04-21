@@ -49,5 +49,27 @@ public final class TestData {
                     .build());
 
     }
+
+    public static List<ShoppingListDto> listOfShoppingListsDTO() {
+        return List.of(
+                ShoppingListDto.builder()
+                        .id(1L)
+                        .added(LocalDate.now())
+                        .description("Test 1")
+                        .build(),
+
+                ShoppingListDto.builder()
+                        .id(2L)
+                        .added(LocalDate.now().plusDays(5))
+                        .description("Test 2")
+                        .build(),
+
+                ShoppingListDto.builder()
+                        .id(3L)
+                        .added(LocalDate.now().plusDays(10))
+                        .description("Test 3")
+                        .build());
+
+    }
 }
 
