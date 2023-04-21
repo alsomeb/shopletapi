@@ -6,7 +6,7 @@ import com.alsomeb.shopletapi.repository.ShoppingListRepository;
 import com.alsomeb.shopletapi.service.ShoppingListService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import jakarta.transaction.Transactional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -25,14 +26,16 @@ import static com.alsomeb.shopletapi.TestData.testShoppingListDTO;
 import static com.alsomeb.shopletapi.TestData.testShoppingListEntity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-// Kanske kolla på hur vi kan isolera dessa tester att inte förstöra för vår db om vi kör DDL Update på MYSQL
-// Byta till MySql och köra h2 db för dessa tests kanske går?
-// ledtråd: https://www.arhohuttunen.com/spring-boot-integration-testing/
+
+// Help: https://www.arhohuttunen.com/spring-boot-integration-testing/
+// Move Properties To a Profile With @ActiveProfiles, we run these tests with an H2 DB instead of PostGre SQL
+// @Transactional - roll back any changes after tests
+
 
 @SpringBootTest
 @AutoConfigureMockMvc // will take care of creating the mock object for us
 @ExtendWith(SpringExtension.class)
-@Transactional // roll back any changes after tests
+@ActiveProfiles("h2db")
 public class ShoppingListEntityControllerIntegrationTest {
 
     // MockMVC allows us to test the API as if we were calling it
