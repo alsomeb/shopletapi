@@ -38,3 +38,4 @@ out/
 
 ## Properties File
 src/main/resources/application.properties
+src/main/resources/application-postgresdb.properties
