@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,13 +32,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 // Help: https://www.arhohuttunen.com/spring-boot-integration-testing/
 // Move Properties To a Profile With @ActiveProfiles, we run these tests with an H2 DB instead of PostGre SQL
-
+// @Transactional // roll back any changes after tests
+// @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD) == CREATES/CLEAN DB Before Each Test
 
 @SpringBootTest
 @AutoConfigureMockMvc // will take care of creating the mock object for us
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("h2db")
-//@Transactional // roll back any changes after tests
 public class ShoppingListEntityControllerIntegrationTest {
 
     // MockMVC allows us to test the API as if we were calling it
@@ -131,8 +132,6 @@ public class ShoppingListEntityControllerIntegrationTest {
                         "$.[0].added").value(target.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
     }
 
-    // Todo.. Delete, PUT
-
     @Test
     public void testThatGetListsOrderByDateAscReturnsCorrect200() throws Exception {
         String requestURL = "/api/v1/shoppinglists/sort?order=asc";
@@ -152,7 +151,7 @@ public class ShoppingListEntityControllerIntegrationTest {
         final ShoppingListDto random = ShoppingListDto.builder()
                 .id(2L)
                 .added(LocalDate.now().plusDays(5))
-                .description("Last")
+                .description("random")
                 .build();
 
 
@@ -169,8 +168,11 @@ public class ShoppingListEntityControllerIntegrationTest {
 
     }
 
+    // Todo.. Delete, PUT
+
     @BeforeEach
     public void cleanDb() {
+        // Annars får vi våran data.sql seed conflict med tests
         shoppingListRepository.deleteAll();
     }
 

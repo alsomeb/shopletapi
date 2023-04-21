@@ -105,7 +105,6 @@ class ShoppingListEntityImplTest {
                 .hasSize(3);
     }
 
-    // TODO DeleteById
 
     @Test
     public void testThatGetListsOrderByDateAscReturnsCorrect() {
@@ -122,5 +121,7 @@ class ShoppingListEntityImplTest {
         assertThat(result.get(0))
                 .isEqualTo(testListDTO.get(0));
     }
+
+    // TODO DeleteById
 
 }
