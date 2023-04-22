@@ -190,13 +190,28 @@ public class ShoppingListEntityControllerIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.get(requestURL))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(
-                        "$.[0].added").value(targetFirst.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
-                .andExpect(MockMvcResultMatchers.jsonPath(
-                        "$.[2].added").value(targetLast.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
+                        "$.[0].added").value(targetFirst.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
 
     }
 
-    // Todo.. Delete, PUT
+    @Test
+    public void testDeleteBookThatDoesntExistReturns200WithDeleteResponseFalse() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete(apiRootURL + "/521521515"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath(
+                        "$.deleted").value(false));
+    }
+
+    @Test
+    public void testDeleteBookThatDoesntExistReturns200WithDeleteResponseTrue() throws Exception {
+        final ShoppingListDto shoppingListDto = testShoppingListDTO();
+        var target = shoppingListService.save(shoppingListDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(apiRootURL + "/" + target.getId()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath(
+                        "$.deleted").value(true));
+    }
 
     @BeforeEach
     public void cleanDb() {

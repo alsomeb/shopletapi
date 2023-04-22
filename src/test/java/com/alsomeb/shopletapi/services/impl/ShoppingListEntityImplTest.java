@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static com.alsomeb.shopletapi.TestData.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -122,6 +122,14 @@ class ShoppingListEntityImplTest {
                 .isEqualTo(testListDTO.get(0));
     }
 
-    // TODO DeleteById
+    @Test
+    public void testThatBookDeletedIsFirstRunningFindById() {
+        // We can only really test that it calls the repository because deleteById() from repo doesn't return anything
+        // mockito Static method verify() helps us here
+        long id = 1L;
+        underTest.deleteById(id);
+        verify(shoppingListRepository, times(1)).findById(eq(id));
+
+    }
 
 }
