@@ -125,6 +125,7 @@ class ShoppingListEntityImplTest {
     @Test
     public void testThatBookDeletedIsFirstRunningFindById() {
         // We can only really test that it calls the repository because deleteById() from repo doesn't return anything
+        // service method first uses findById().
         // mockito Static method verify() helps us here
         long id = 1L;
         underTest.deleteById(id);

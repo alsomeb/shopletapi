@@ -1,7 +1,6 @@
 package com.alsomeb.shopletapi.controllers;
 
 import com.alsomeb.shopletapi.dto.ShoppingListDto;
-import com.alsomeb.shopletapi.entity.ShoppingListEntity;
 import com.alsomeb.shopletapi.repository.ShoppingListRepository;
 import com.alsomeb.shopletapi.service.ShoppingListService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,13 +61,19 @@ public class ShoppingListEntityControllerIntegrationTest {
 
     @Test
     public void testThatShoppingListIsCreated201() throws Exception {
-        final ShoppingListEntity shoppingListEntity = testShoppingListEntity();
+        // Blir utan ID här men vi får id när vi .save() mha Service
+        var dto = ShoppingListDto.builder()
+                .added(LocalDate.now())
+                .description("Test")
+                .build();
+
+        var savedDto = shoppingListService.save(dto);
 
         // In Order to get the JSON from the book we can use
         // Serialize dates: https://howtodoinjava.com/jackson/java-8-date-time-type-not-supported-by-default/
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule()); // Dependency for serializing LocalDateTime
-        final String bookJSON = objectMapper.writeValueAsString(shoppingListEntity);
+        final String bookJSON = objectMapper.writeValueAsString(savedDto);
 
         // value() == Evaluate the JSON path expression against the response content and assert that the result is equal to the supplied value.
         mockMvc.perform(MockMvcRequestBuilders.post(apiRootURL)
@@ -76,11 +81,11 @@ public class ShoppingListEntityControllerIntegrationTest {
                         .content(bookJSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath(
-                        "$.id").value(shoppingListEntity.getId()))
+                        "$.id").value(savedDto.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath(
-                        "$.description").value(shoppingListEntity.getDescription()))
+                        "$.description").value(savedDto.getDescription()))
                 .andExpect(MockMvcResultMatchers.jsonPath(
-                        "$.added").value(shoppingListEntity.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
+                        "$.added").value(savedDto.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
 
         // Creates a matcher that matches if the examined String contains the specified String anywhere.
         //.andExpect(content().string(containsString("api/shoppinglists/1")));
