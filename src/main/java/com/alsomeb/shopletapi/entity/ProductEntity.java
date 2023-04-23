@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Objects;
 
@@ -34,6 +36,7 @@ public class ProductEntity {
     // Join Column is the actual FK in table
     @ManyToOne
     @JoinColumn(name = "shoppinglist_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private ShoppingListEntity shoppingList;
 
     @Override

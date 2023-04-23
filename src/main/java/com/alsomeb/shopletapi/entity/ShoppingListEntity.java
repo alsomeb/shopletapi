@@ -37,7 +37,7 @@ public class ShoppingListEntity {
     // https://www.baeldung.com/hibernate-one-to-many
     // Inverse side, Bidirectional relationship
     @ToString.Exclude
-    @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "shoppingList")
     private Set<ProductEntity> products;
 
     @Override
