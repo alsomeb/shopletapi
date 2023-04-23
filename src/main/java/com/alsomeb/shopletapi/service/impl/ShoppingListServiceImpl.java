@@ -86,6 +86,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
                 .id(shoppingListDto.getId())
                 .added(shoppingListDto.getAdded())
                 .description(shoppingListDto.getDescription())
+                .products(shoppingListDto.getProducts())
                 .build();
     }
 
@@ -94,6 +95,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
                 .id(shoppingListEntity.getId())
                 .added(shoppingListEntity.getAdded())
                 .description(shoppingListEntity.getDescription())
+                .products(shoppingListEntity.getProducts())
                 .build();
     }
 }

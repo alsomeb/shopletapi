@@ -2,11 +2,11 @@ package com.alsomeb.shopletapi.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -20,22 +20,21 @@ public class ProductEntity {
 
     @Id
     @GeneratedValue
+    @Column(nullable = false)
     private Long id;
 
     @NotEmpty(message = "Product name is mandatory")
     private String name;
 
-    // Flera Producter Kan finnas på Flera ShoppingLists
-    // https://www.baeldung.com/jpa-many-to-many
-    // Behöver ej def namn o join columns och join table, men jag vill ha namnen på mitt sätt!
-    @ManyToMany
-    @JoinTable(
-            name = "shoppinglist_product",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "shoppinglist_id")
-    )
-    @ToString.Exclude
-    Set<ShoppingListEntity> shoppingLists;
+    @NotEmpty(message = "amount is mandatory")
+    @Size(min = 1, message = "Minimum 1 product")
+    private int amount;
+
+    // it's a good practice to mark the many-to-one side as the owning side.
+    // Join Column is the actual FK in table
+    @ManyToOne
+    @JoinColumn(name = "shoppinglist_id")
+    private ShoppingListEntity shoppingList;
 
     @Override
     public boolean equals(Object o) {

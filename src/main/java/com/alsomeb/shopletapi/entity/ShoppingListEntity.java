@@ -1,6 +1,6 @@
 package com.alsomeb.shopletapi.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
@@ -9,6 +9,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import java.time.LocalDate;
+
 import java.util.Objects;
 import java.util.Set;
 
@@ -33,13 +34,11 @@ public class ShoppingListEntity {
     @FutureOrPresent(message = "date added must be present or in the future")
     private LocalDate added;
 
-    // Not owning side, that's Product Entity
-    // A many-to-many rel doesn't have an owning side in the db
-    // we configure the join table in the Product entity and ref it here only
-    @ManyToMany(mappedBy = "shoppingLists")
-    @JsonIgnore
+    // https://www.baeldung.com/hibernate-one-to-many
+    // Inverse side, Bidirectional relationship
     @ToString.Exclude
-    Set<ProductEntity> products;
+    @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL)
+    private Set<ProductEntity> products;
 
     @Override
     public boolean equals(Object o) {
