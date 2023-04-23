@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Set;
 
 @RestController
-@RequestMapping("api/v1/shoppinglists")
+@RequestMapping("api/v1")
 public class ProductController {
 
     private final ProductService productService;
@@ -25,7 +25,7 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("{id}/products")
+    @GetMapping("shoppinglists/{id}/products")
     public ResponseEntity<Set<ProductDto>> getProductsByShoppingListId(@PathVariable long id) {
         var products = productService.findAllProductsByShoppingListId(id);
         return new ResponseEntity<>(products, HttpStatus.OK);
