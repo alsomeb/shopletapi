@@ -32,6 +32,12 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
+    @GetMapping("products/{id}")
+    public ResponseEntity<ProductDto> findProductById(@PathVariable long id) {
+        var foundProduct = productService.findProductById(id);
+        return new ResponseEntity<>(foundProduct, HttpStatus.OK);
+    }
+
     @PostMapping("shoppinglists/{id}/products")
     public ResponseEntity<ProductDto> saveProductToList(@PathVariable long id, @Valid @RequestBody ProductDto productDto) {
         var savedProduct = productService.saveProductToShoppingList(id, productDto);

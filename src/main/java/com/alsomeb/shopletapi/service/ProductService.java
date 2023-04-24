@@ -9,4 +9,6 @@ public interface ProductService {
     Set<ProductDto> findAllProductsByShoppingListId(long id);
 
     ProductDto saveProductToShoppingList(Long listId, ProductDto productDto);
+
+    ProductDto findProductById(long id);
 }

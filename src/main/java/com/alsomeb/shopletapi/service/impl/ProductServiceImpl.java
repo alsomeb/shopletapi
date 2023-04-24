@@ -5,6 +5,7 @@ import com.alsomeb.shopletapi.dto.ProductDto;
 import com.alsomeb.shopletapi.entity.ProductEntity;
 
 import com.alsomeb.shopletapi.entity.ShoppingListEntity;
+import com.alsomeb.shopletapi.exception.ProductNotFoundException;
 import com.alsomeb.shopletapi.exception.ShoppingListNotFoundException;
 import com.alsomeb.shopletapi.repository.ProductRepository;
 
@@ -51,6 +52,13 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity savedEntity = productRepository.save(productEntity);
 
         return toDTO(savedEntity);
+    }
+
+    @Override
+    public ProductDto findProductById(long id) {
+        return productRepository.findById(id).stream()
+                .map(productEntity -> toDTO(productEntity))
+                .findFirst().orElseThrow(() -> new ProductNotFoundException("Cant find Product with id: " + id));
     }
 
 
