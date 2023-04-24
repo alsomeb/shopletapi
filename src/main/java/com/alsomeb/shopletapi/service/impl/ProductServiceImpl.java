@@ -40,12 +40,25 @@ public class ProductServiceImpl implements ProductService {
         return toDTOSet(productsEntities);
     }
 
+    @Override
+    public ProductDto saveProductToShoppingList(Long listId, ProductDto productDto) {
+        ShoppingListEntity shoppingListEntity = shoppingListRepository.findById(listId)
+                .orElseThrow(() -> new ShoppingListNotFoundException("Cant find ShoppingList with id: " + listId));
+
+        // Apply Shopping list with given ID to the product posted and save it to db
+        ProductEntity productEntity = toEntity(productDto);
+        productEntity.setShoppingList(shoppingListEntity);
+        ProductEntity savedEntity = productRepository.save(productEntity);
+
+        return toDTO(savedEntity);
+    }
+
 
     // Helper Methods
     private ProductEntity toEntity(ProductDto productDto) {
         return ProductEntity.builder()
                 .id(productDto.getId())
-                .name(productDto.getName())
+                .name(productDto.getName().toLowerCase())
                 .amount(productDto.getAmount())
                 .build();
     }
@@ -53,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
     private ProductDto toDTO(ProductEntity productEntity) {
         return ProductDto.builder()
                 .id(productEntity.getId())
-                .name(productEntity.getName())
+                .name(productEntity.getName().toLowerCase())
                 .amount(productEntity.getAmount())
                 .build();
     }
