@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 
+// Guide: https://reflectoring.io/bean-validation-with-spring-boot/
+
 @Data
 @Builder
 public class ProductDto {
