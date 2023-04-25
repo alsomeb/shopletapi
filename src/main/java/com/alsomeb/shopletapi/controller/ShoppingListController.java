@@ -81,7 +81,7 @@ public class ShoppingListController {
         final boolean exist = shoppingListService.doesListExist(shoppingListDto);
         final ShoppingListDto savedList = shoppingListService.save(shoppingListDto);
 
-        EntityModel<ShoppingListDto> entityModel = EntityModel.of(shoppingListDto,
+        EntityModel<ShoppingListDto> entityModel = EntityModel.of(savedList,
                 linkTo(methodOn(ShoppingListController.class).getShoppingListById(savedList.getId())).withSelfRel(),
                 linkTo(methodOn(ShoppingListController.class).getAllShoppingLists()).withRel("all-lists"));
 
