@@ -2,7 +2,7 @@ package com.alsomeb.shopletapi.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -26,7 +26,7 @@ public class ProductEntity {
     @Column(nullable = false)
     private Long id;
 
-    @NotEmpty(message = "Product name is mandatory")
+    @NotBlank(message = "Product name is mandatory")
     @Size(min = 1, message = "Minimum 2 letters for product name")
     private String name;
 
