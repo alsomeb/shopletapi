@@ -50,7 +50,7 @@ public class ShoppingListController {
                 linkTo(methodOn(ShoppingListController.class).getAllShoppingLists()).withRel("all-lists"));
     }
 
-    // HATEOAS impl
+    // HATEOAS impl, ----OBS PUT MAPPING KAN SKAPA OCH UPD, OBSOLET METOD ? --
     @PostMapping
     public ResponseEntity<EntityModel<ShoppingListDto>> addList(@Valid @RequestBody ShoppingListDto shoppingListDto) {
         // När vi post så får vi tbx en länk till resource som skapats.
@@ -73,7 +73,6 @@ public class ShoppingListController {
 
 
     // HATEOS Impl
-    // Förbättring kanske bara ha PUT Request och skapa och upd resource här?
     @PutMapping("{id}")
     public ResponseEntity<EntityModel<ShoppingListDto>> updateList(@Valid @RequestBody ShoppingListDto shoppingListDto, @PathVariable long id) {
         shoppingListDto.setId(id); // Id används för update, spelar ingen roll om resource inte finns pga databasen har senaste ID sequence när den skapar NY
