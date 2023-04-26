@@ -208,7 +208,7 @@ public class ShoppingListEntityControllerIntegrationTest {
     }
 
     @Test
-    public void testDeleteListThatDoesntExistReturns200WithDeleteResponseTrue() throws Exception {
+    public void testDeleteListThatDoesExistReturns200WithDeleteResponseTrue() throws Exception {
         final ShoppingListDto shoppingListDto = testShoppingListDTO();
         var target = shoppingListService.save(shoppingListDto);
 
