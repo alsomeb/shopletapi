@@ -69,16 +69,16 @@ public class ShoppingListEntityControllerIntegrationTest {
 
         var savedDto = shoppingListService.save(dto);
 
-        // In Order to get the JSON from the book we can use
+        // In Order to get the JSON from the shoppinglist we can use
         // Serialize dates: https://howtodoinjava.com/jackson/java-8-date-time-type-not-supported-by-default/
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule()); // Dependency for serializing LocalDateTime
-        final String bookJSON = objectMapper.writeValueAsString(savedDto);
+        final String listJSON = objectMapper.writeValueAsString(savedDto);
 
         // value() == Evaluate the JSON path expression against the response content and assert that the result is equal to the supplied value.
         mockMvc.perform(MockMvcRequestBuilders.post(apiRootURL)
                 .contentType(MediaType.APPLICATION_JSON)
-                        .content(bookJSON))
+                        .content(listJSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath(
                         "$.id").value(savedDto.getId()))
@@ -107,11 +107,11 @@ public class ShoppingListEntityControllerIntegrationTest {
 
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule()); // Dependency for serializing LocalDateTime
-        final String bookJSON = objectMapper.writeValueAsString(savedDto);
+        final String listJSON = objectMapper.writeValueAsString(savedDto);
 
         mockMvc.perform(MockMvcRequestBuilders.put(apiRootURL + "/" + savedDto.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(bookJSON))
+                        .content(listJSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(
                         "$.id").value(savedDto.getId()))
@@ -200,7 +200,7 @@ public class ShoppingListEntityControllerIntegrationTest {
     }
 
     @Test
-    public void testDeleteBookThatDoesntExistReturns200WithDeleteResponseFalse() throws Exception {
+    public void testDeleteListThatDoesntExistReturns200WithDeleteResponseFalse() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete(apiRootURL + "/521521515"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(
@@ -208,7 +208,7 @@ public class ShoppingListEntityControllerIntegrationTest {
     }
 
     @Test
-    public void testDeleteBookThatDoesntExistReturns200WithDeleteResponseTrue() throws Exception {
+    public void testDeleteListThatDoesntExistReturns200WithDeleteResponseTrue() throws Exception {
         final ShoppingListDto shoppingListDto = testShoppingListDTO();
         var target = shoppingListService.save(shoppingListDto);
 

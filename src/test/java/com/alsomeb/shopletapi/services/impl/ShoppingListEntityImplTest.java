@@ -62,7 +62,7 @@ class ShoppingListEntityImplTest {
     }
 
     @Test
-    public void testFindListByIdReturnsCorrectBookIfExists() {
+    public void testFindListByIdReturnsCorrectListIfExists() {
         final long targetId = 1L;
 
         // Optional.Of() == Returns an Optional describing the given non-null value
@@ -123,7 +123,7 @@ class ShoppingListEntityImplTest {
     }
 
     @Test
-    public void testThatBookDeletedIsFirstRunningFindById() {
+    public void testThatListDeletedIsFirstRunningFindById() {
         // We can only really test that it calls the repository because deleteById() from repo doesn't return anything
         // service method first uses findById().
         // mockito Static method verify() helps us here
