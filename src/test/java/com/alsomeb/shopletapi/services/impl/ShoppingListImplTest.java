@@ -28,7 +28,7 @@ import java.util.Optional;
 // https://www.youtube.com/watch?v=HmRVrAT4uA0&list=PLMVHTRBusikoEW-dVLcBJrdGQ3A9Eydj_&index=10&t=3083s
 
 @ExtendWith(MockitoExtension.class)
-class ShoppingListEntityImplTest {
+class ShoppingListImplTest {
 
     // @Mock creates a mock repository and its behaviour using when() and thenReturn() method.
 
