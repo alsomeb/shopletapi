@@ -67,6 +67,7 @@ public class ProductServiceImpl implements ProductService {
 
         match.setAmount(productDto.getAmount());
         match.setName(productDto.getName());
+        // Behöver ej set shoppinglistan igen då den redan har en shoppingLista på sig (läggs till vid saveProductToShoppingList)
 
         var savedEntity = productRepository.save(match);
 
