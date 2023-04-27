@@ -61,6 +61,18 @@ public class ProductServiceImpl implements ProductService {
                 .findFirst().orElseThrow(() -> new ProductNotFoundException("Cant find Product with id: " + id));
     }
 
+    @Override
+    public ProductDto updateProduct(ProductDto productDto) {
+        var match = productRepository.findById(productDto.getId()).orElseThrow(() -> new ProductNotFoundException("Cant find Product with id: " + productDto.getId()));
+
+        match.setAmount(productDto.getAmount());
+        match.setName(productDto.getName());
+
+        var savedEntity = productRepository.save(match);
+
+        return toDTO(savedEntity);
+    }
+
 
     // Helper Methods
     private ProductEntity toEntity(ProductDto productDto) {

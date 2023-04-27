@@ -44,4 +44,11 @@ public class ProductController {
         log.info("Added product with name: {} to shoppinglist with id: {}", savedProduct.getName(), id);
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
+
+    @PutMapping("products/{id}")
+    public ResponseEntity<ProductDto> updateProductById(@PathVariable long id, @Valid @RequestBody ProductDto productDto) {
+        productDto.setId(id);
+        var savedProductDTO = productService.updateProduct(productDto);
+        return new ResponseEntity<>(savedProductDTO, HttpStatus.OK);
+    }
 }
