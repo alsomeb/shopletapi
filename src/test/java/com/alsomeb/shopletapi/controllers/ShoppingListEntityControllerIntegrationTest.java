@@ -63,6 +63,7 @@ public class ShoppingListEntityControllerIntegrationTest {
     public void testThatShoppingListIsCreated201() throws Exception {
         // Blir utan ID här men vi får id när vi .save() mha Service
         var dto = ShoppingListDto.builder()
+                .id(1L)
                 .added(LocalDate.now())
                 .description("Test")
                 .build();
@@ -96,6 +97,7 @@ public class ShoppingListEntityControllerIntegrationTest {
     public void testThatShoppingListIsUpdatedReturns200() throws Exception {
         // Blir utan ID här men vi får id när vi .save() mha Service
         var dto = ShoppingListDto.builder()
+                .id(1L)
                 .added(LocalDate.now())
                 .description("Test")
                 .build();
