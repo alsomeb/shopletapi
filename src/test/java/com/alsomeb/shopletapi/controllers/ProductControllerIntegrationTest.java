@@ -142,7 +142,10 @@ public class ProductControllerIntegrationTest {
     public void testFindAllProductsByShoppingListIdReturnsCorrectListIfListAndProductsExists() throws Exception {
 
         Set<ProductEntity> productSet = testProductEntitySet();
-        Set<ProductDto> expectedList = testProductDTOSet();
+        Set<ProductDto> expectedList = testProductDTOSet(); // Används för att skriva till JSON lista för att jämföra resultat i test
+
+        // ShoppingListan har inga produkter fäst på objektet från början dvs null, nedan har vi ett Set<ProductEntity>
+        // som vi fäster på Shoppinglistan annars kommer vi få 404 så som vi byggt i service
         ShoppingListEntity shoppingListEntity = testShoppingListEntity();
         shoppingListEntity.setProducts(productSet);
 
