@@ -41,6 +41,17 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ProductNotFoundException.class)
+    public final ResponseEntity<ErrorDetails> handleProductNotFoundException(Exception ex, WebRequest request) {
+        ErrorDetails errorDetails = ErrorDetails.builder()
+                .timeStamp(LocalDateTime.now())
+                .message(ex.getMessage())
+                .details(request.getDescription(false)) // Get a short description of this request
+                .build();
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
     // Detta gör så vi kan se Validation error messages i API:n (Spring Starter Validation)
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
