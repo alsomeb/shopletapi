@@ -50,6 +50,7 @@ public class ShoppingListController {
                 linkTo(methodOn(ShoppingListController.class).getAllShoppingLists()).withRel("all-lists"));
     }
 
+    /*
     // HATEOAS impl, ----OBS PUT MAPPING KAN SKAPA OCH UPD, OBSOLET METOD ? --
     @PostMapping
     public ResponseEntity<EntityModel<ShoppingListDto>> addList(@Valid @RequestBody ShoppingListDto shoppingListDto) {
@@ -64,6 +65,7 @@ public class ShoppingListController {
 
         return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
     }
+     */
 
     @DeleteMapping("{id}")
     public ResponseEntity<DeleteResponse> deleteListById(@PathVariable long id) {

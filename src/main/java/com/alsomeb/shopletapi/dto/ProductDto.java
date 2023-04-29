@@ -14,7 +14,7 @@ public class ProductDto {
     private Long id;
 
     @NotBlank(message = "Product name is mandatory")
-    @Size(min = 1, message = "Minimum 2 letters for product name")
+    @Size(min = 2, message = "Minimum 2 letters for product name")
     private String name;
 
     @Min(value = 1, message = "Min 1 product")

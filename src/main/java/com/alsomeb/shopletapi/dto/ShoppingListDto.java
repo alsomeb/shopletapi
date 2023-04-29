@@ -12,7 +12,7 @@ public class ShoppingListDto {
     private Long id;
 
     @NotBlank(message = "desc is mandatory")
-    @Size(min = 1, message = "Minimum 2 letters for desc")
+    @Size(min = 2, message = "Minimum 2 letters for desc")
     private String description;
 
     @NotNull(message = "missing date field 'added'")
