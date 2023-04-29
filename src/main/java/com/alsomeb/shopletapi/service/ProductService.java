@@ -13,4 +13,6 @@ public interface ProductService {
     ProductDto findProductById(long id);
 
     ProductDto updateProduct(ProductDto productDto);
+
+    DeleteResponse deleteProductById(long id);
 }

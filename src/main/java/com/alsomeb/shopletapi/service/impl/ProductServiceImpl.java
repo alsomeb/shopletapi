@@ -10,6 +10,7 @@ import com.alsomeb.shopletapi.exception.ShoppingListNotFoundException;
 import com.alsomeb.shopletapi.repository.ProductRepository;
 
 import com.alsomeb.shopletapi.repository.ShoppingListRepository;
+import com.alsomeb.shopletapi.service.DeleteResponse;
 import com.alsomeb.shopletapi.service.ProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +73,19 @@ public class ProductServiceImpl implements ProductService {
         var savedEntity = productRepository.save(match);
 
         return toDTO(savedEntity);
+    }
+
+    @Override
+    public DeleteResponse deleteProductById(long id) {
+        var matchProductEntity = productRepository
+                .findById(id);
+
+        if (matchProductEntity.isPresent()) {
+            productRepository.deleteById(id);
+            return new DeleteResponse(true);
+        }
+
+        return new DeleteResponse(false);
     }
 
 

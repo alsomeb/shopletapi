@@ -3,6 +3,7 @@ package com.alsomeb.shopletapi.services.impl;
 import com.alsomeb.shopletapi.dto.ProductDto;
 import com.alsomeb.shopletapi.entity.ProductEntity;
 import com.alsomeb.shopletapi.entity.ShoppingListEntity;
+import com.alsomeb.shopletapi.exception.ProductNotFoundException;
 import com.alsomeb.shopletapi.repository.ProductRepository;
 import com.alsomeb.shopletapi.repository.ShoppingListRepository;
 import com.alsomeb.shopletapi.service.impl.ProductServiceImpl;
@@ -17,7 +18,8 @@ import java.util.Set;
 
 import static com.alsomeb.shopletapi.TestData.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -27,7 +29,7 @@ public class ProductServiceImplTest {
     private ProductRepository productRepository;
 
     @Mock
-    ShoppingListRepository shoppingListRepository;
+    private ShoppingListRepository shoppingListRepository;
 
     @InjectMocks
     private ProductServiceImpl underTest;
@@ -52,7 +54,44 @@ public class ProductServiceImplTest {
 
         assertThat(result)
                 .isEqualTo(productDto);
+    }
 
+    @Test
+    public void testThatProductIsDeletedFromList() {
+        ProductEntity productEntity = testProductEntity();
 
+        when(productRepository.findById(productEntity.getId())).thenReturn(Optional.of(productEntity));
+        var result = underTest.deleteProductById(productEntity.getId());
+        verify(productRepository, times(1)).findById(eq(productEntity.getId()));
+
+        assertThat(result.deleted())
+                .isEqualTo(true);
+    }
+
+    @Test
+    public void testThatFindProductByIdThrowsNoSuchProductExceptionIfNotFound() {
+        ProductEntity productEntity = testProductEntity();
+
+        assertThatThrownBy(() -> underTest.findProductById(productEntity.getId()))
+                .isInstanceOf(ProductNotFoundException.class);
+    }
+
+    @Test
+    public void testThatFindProductByIdReturnsProductIfFound() {
+        ProductEntity productEntity = testProductEntity();
+        ProductDto productDto = testProductDTO();
+        when(productRepository.findById(productEntity.getId())).thenReturn(Optional.of(productEntity));
+
+        var result = underTest.findProductById(productDto.getId());
+
+        ProductDto nope = ProductDto.builder()
+                .id(232L)
+                .name("Nope")
+                .amount(25152)
+                .build();
+
+        assertThat(result)
+                .isNotEqualTo(nope)
+                .isEqualTo(productDto);
     }
 }
