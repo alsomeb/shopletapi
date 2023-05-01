@@ -50,17 +50,30 @@ public class ShoppingListServiceImpl implements ShoppingListService {
 
     @Override
     public ShoppingListDto save(ShoppingListDto shoppingListDto) {
-               /*
+        /*
          1. We don't leak our info on Entity
          2. Takes A ShoppingListDto
          3. Converts a ShoppingListDto to ShoppingListEntity
          4. We then save our ShoppingListEntity with repository that returns a new SAVED ShoppingListEntity
          5. Then we return our saved ShoppingListEntity converted to a DTO
          */
+        var exists = doesListExist(shoppingListDto);
 
+        if(exists) {
+            // Hämta fr DB By Id
+            var fromDB = getById(shoppingListDto.getId());
+
+            // Upd Fält + Spara ner till DB
+            final ShoppingListEntity shoppingListEntity = shoppingListDTOToEntity(fromDB);
+            shoppingListEntity.setDescription(shoppingListDto.getDescription());
+            shoppingListEntity.setAdded(shoppingListDto.getAdded());
+            final ShoppingListEntity savedEntity = shoppingListRepository.save(shoppingListEntity);
+            return shoppingListEntityToDTO(savedEntity);
+        }
+
+        // Ny Skapande
         final ShoppingListEntity shoppingListEntity = shoppingListDTOToEntity(shoppingListDto);
         final ShoppingListEntity savedEntity = shoppingListRepository.save(shoppingListEntity);
-
         return shoppingListEntityToDTO(savedEntity);
     }
 

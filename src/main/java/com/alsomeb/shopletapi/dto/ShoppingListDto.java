@@ -1,8 +1,6 @@
 package com.alsomeb.shopletapi.dto;
 
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,7 +11,8 @@ import java.time.LocalDate;
 public class ShoppingListDto {
     private Long id;
 
-    @NotEmpty(message = "Description is mandatory")
+    @NotBlank(message = "desc is mandatory")
+    @Size(min = 2, message = "Minimum 2 letters for desc")
     private String description;
 
     @NotNull(message = "missing date field 'added'")

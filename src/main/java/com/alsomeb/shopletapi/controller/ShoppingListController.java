@@ -20,6 +20,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("api/v1/shoppinglists")
+@CrossOrigin
 public class ShoppingListController {
 
     private final ShoppingListService shoppingListService;
@@ -50,7 +51,8 @@ public class ShoppingListController {
                 linkTo(methodOn(ShoppingListController.class).getAllShoppingLists()).withRel("all-lists"));
     }
 
-    // HATEOAS impl
+    /*
+    // HATEOAS impl, ----OBS PUT MAPPING KAN SKAPA OCH UPD, OBSOLET METOD ? --
     @PostMapping
     public ResponseEntity<EntityModel<ShoppingListDto>> addList(@Valid @RequestBody ShoppingListDto shoppingListDto) {
         // När vi post så får vi tbx en länk till resource som skapats.
@@ -64,6 +66,7 @@ public class ShoppingListController {
 
         return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
     }
+     */
 
     @DeleteMapping("{id}")
     public ResponseEntity<DeleteResponse> deleteListById(@PathVariable long id) {
@@ -73,7 +76,6 @@ public class ShoppingListController {
 
 
     // HATEOS Impl
-    // Förbättring kanske bara ha PUT Request och skapa och upd resource här?
     @PutMapping("{id}")
     public ResponseEntity<EntityModel<ShoppingListDto>> updateList(@Valid @RequestBody ShoppingListDto shoppingListDto, @PathVariable long id) {
         shoppingListDto.setId(id); // Id används för update, spelar ingen roll om resource inte finns pga databasen har senaste ID sequence när den skapar NY
@@ -81,7 +83,7 @@ public class ShoppingListController {
         final boolean exist = shoppingListService.doesListExist(shoppingListDto);
         final ShoppingListDto savedList = shoppingListService.save(shoppingListDto);
 
-        EntityModel<ShoppingListDto> entityModel = EntityModel.of(shoppingListDto,
+        EntityModel<ShoppingListDto> entityModel = EntityModel.of(savedList,
                 linkTo(methodOn(ShoppingListController.class).getShoppingListById(savedList.getId())).withSelfRel(),
                 linkTo(methodOn(ShoppingListController.class).getAllShoppingLists()).withRel("all-lists"));
 

@@ -28,7 +28,7 @@ import java.util.Optional;
 // https://www.youtube.com/watch?v=HmRVrAT4uA0&list=PLMVHTRBusikoEW-dVLcBJrdGQ3A9Eydj_&index=10&t=3083s
 
 @ExtendWith(MockitoExtension.class)
-class ShoppingListEntityImplTest {
+class ShoppingListImplTest {
 
     // @Mock creates a mock repository and its behaviour using when() and thenReturn() method.
 
@@ -62,7 +62,7 @@ class ShoppingListEntityImplTest {
     }
 
     @Test
-    public void testFindListByIdReturnsCorrectBookIfExists() {
+    public void testFindListByIdReturnsCorrectListIfExists() {
         final long targetId = 1L;
 
         // Optional.Of() == Returns an Optional describing the given non-null value
@@ -123,7 +123,7 @@ class ShoppingListEntityImplTest {
     }
 
     @Test
-    public void testThatBookDeletedIsFirstRunningFindById() {
+    public void testThatListDeletedIsFirstRunningFindById() {
         // We can only really test that it calls the repository because deleteById() from repo doesn't return anything
         // service method first uses findById().
         // mockito Static method verify() helps us here

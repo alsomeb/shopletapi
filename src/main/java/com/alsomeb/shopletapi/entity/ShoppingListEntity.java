@@ -2,9 +2,7 @@ package com.alsomeb.shopletapi.entity;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -27,7 +25,8 @@ public class ShoppingListEntity {
     @GeneratedValue
     private Long id;
 
-    @NotEmpty(message = "Description is mandatory")
+    @NotBlank(message = "desc is mandatory")
+    @Size(min = 2, message = "Minimum 2 letters for desc")
     private String description;
 
     @NotNull(message = "missing date field 'added'")

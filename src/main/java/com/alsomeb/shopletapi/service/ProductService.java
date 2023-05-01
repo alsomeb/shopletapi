@@ -11,4 +11,8 @@ public interface ProductService {
     ProductDto saveProductToShoppingList(Long listId, ProductDto productDto);
 
     ProductDto findProductById(long id);
+
+    ProductDto updateProduct(ProductDto productDto);
+
+    DeleteResponse deleteProductById(long id);
 }
