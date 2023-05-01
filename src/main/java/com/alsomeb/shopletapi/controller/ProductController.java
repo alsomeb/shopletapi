@@ -16,6 +16,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("api/v1")
+@CrossOrigin
 @Slf4j
 public class ProductController {
 

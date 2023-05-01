@@ -20,6 +20,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("api/v1/shoppinglists")
+@CrossOrigin
 public class ShoppingListController {
 
     private final ShoppingListService shoppingListService;
