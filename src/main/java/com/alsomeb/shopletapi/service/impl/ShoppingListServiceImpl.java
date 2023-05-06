@@ -5,6 +5,7 @@ import com.alsomeb.shopletapi.entity.ShoppingListEntity;
 import com.alsomeb.shopletapi.exception.ShoppingListNotFoundException;
 import com.alsomeb.shopletapi.repository.ShoppingListRepository;
 import com.alsomeb.shopletapi.service.ShoppingListService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ShoppingListServiceImpl implements ShoppingListService {
 
     private final ShoppingListRepository shoppingListRepository;
@@ -82,6 +84,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         Optional<ShoppingListEntity> match = shoppingListRepository.findById(id);
         if(match.isPresent()) {
             shoppingListRepository.deleteById(id);
+            log.info("DELETE Shopping list by id: {}", match.get().getId());
             return true;
         }
         return false;
