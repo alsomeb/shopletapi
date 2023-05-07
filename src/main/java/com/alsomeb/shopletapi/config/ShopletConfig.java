@@ -26,7 +26,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Properties;
 
 @Configuration
-@PropertySource("application-mail.properties")
+@PropertySource("classpath:application-mail.properties")
 public class ShopletConfig {
 
     @Value("${emailUsername}")

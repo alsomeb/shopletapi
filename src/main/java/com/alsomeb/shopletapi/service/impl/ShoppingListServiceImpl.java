@@ -82,7 +82,7 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         final ShoppingListEntity savedEntity = shoppingListRepository.save(shoppingListEntity);
 
         // Skicka Mail TODO FÖRBÄTTRA
-        emailService.sendEmail("alsomeb@gmail.com", "Shoplet Test", "New ShoppingList added");
+        //emailService.sendEmail("alsomeb@gmail.com", "Shoplet Test", "New ShoppingList added");
 
         return shoppingListEntityToDTO(savedEntity);
     }
