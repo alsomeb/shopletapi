@@ -28,7 +28,7 @@ import java.util.Set;
 
 import static com.alsomeb.shopletapi.TestData.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -77,6 +77,10 @@ public class ProductControllerIntegrationTest {
                 )
                 .andExpect(MockMvcResultMatchers.jsonPath(
                         "$.amount").value(productToSave.getAmount()));
+
+        // Verifies we actually called these methods in their repos
+        verify(shoppingListRepository, times(1)).findById(shoppingListEntity.getId());
+        verify(productRepository, times(1)).save(productToSave);
     }
 
     @Test
@@ -107,6 +111,9 @@ public class ProductControllerIntegrationTest {
                 )
                 .andExpect(MockMvcResultMatchers.jsonPath(
                         "$.amount").value(productToUpdate.getAmount()));
+
+        verify(productRepository, times(1)).findById(productToUpdate.getId());
+        verify(productRepository, times(1)).save(productToUpdate);
     }
 
     @Test
@@ -126,16 +133,22 @@ public class ProductControllerIntegrationTest {
                 )
                 .andExpect(MockMvcResultMatchers.jsonPath(
                         "$.amount").value(foundProduct.getAmount()));
+
+        verify(productRepository, times(1)).findById(foundProduct.getId());
     }
 
     @Test
     public void testFindProductByIdReturns404IfNotFound() throws Exception {
-        String url = "/api/v1/products/1337";
+        long productId = 1337L;
+        String url = "/api/v1/products/" + productId;
         mockMvc.perform(MockMvcRequestBuilders.get(url))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath(
                         "$.message").value("Cant find Product with id: 1337"));
+
+        verify(productRepository, times(1)).findById(productId);
+
     }
 
     @Test
@@ -162,6 +175,7 @@ public class ProductControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(productSetJSON));
 
+        verify(shoppingListRepository, times(1)).findById(shoppingListEntity.getId());
 
     }
 
@@ -179,6 +193,9 @@ public class ProductControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("[]"));
+
+        verify(shoppingListRepository, times(1)).findById(shoppingListEntity.getId());
+
     }
 
     @Test
@@ -192,16 +209,21 @@ public class ProductControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(
                         "$.deleted").value(true));
+
+        verify(productRepository, times(1)).findById(foundProduct.getId());
     }
 
     @Test
     public void testDeleteProductByIdReturnsFalseIfDoesntExists() throws Exception {
-        String url = "/api/v1/products/1337";
+        long productId = 1337L;
+        String url = "/api/v1/products/" + productId;
 
         mockMvc.perform(MockMvcRequestBuilders.delete(url))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(
                         "$.deleted").value(false));
+
+        verify(productRepository, times(1)).findById(productId);
     }
 }
