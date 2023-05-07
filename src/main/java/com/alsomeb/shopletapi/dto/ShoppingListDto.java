@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class ShoppingListDto {
     private Long id;
 
-    @NotBlank(message = "desc is mandatory")
+    @NotBlank(message = "description is mandatory")
     @Size(min = 2, message = "Minimum 2 letters for desc")
     private String description;
 

@@ -14,8 +14,10 @@ package com.alsomeb.shopletapi.config;
 
  */
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -24,7 +26,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Properties;
 
 @Configuration
+@PropertySource("application-mail.properties")
 public class ShopletConfig {
+
+    @Value("${emailUsername}")
+    private String emailUserName;
+
+    @Value("${emailPassword}")
+    private String emailPassword;
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -45,8 +54,8 @@ public class ShopletConfig {
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
-        mailSender.setUsername("my.gmail@gmail.com"); // dold
-        mailSender.setPassword("password"); // dold
+        mailSender.setUsername(emailUserName);
+        mailSender.setPassword(emailPassword);
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
