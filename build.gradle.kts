@@ -31,7 +31,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-logging:3.0.5") // Logging
     implementation("org.springframework.boot:spring-boot-starter-hateoas:3.0.5") // Hateoas
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2") // För att Serialisera LocalDateTime
-
+    implementation ("org.springframework.boot:spring-boot-starter-mail")
 
 }
 
