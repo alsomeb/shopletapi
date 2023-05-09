@@ -4,7 +4,6 @@ import com.alsomeb.shopletapi.dto.ShoppingListDto;
 import com.alsomeb.shopletapi.entity.ShoppingListEntity;
 import com.alsomeb.shopletapi.exception.ShoppingListNotFoundException;
 import com.alsomeb.shopletapi.repository.ShoppingListRepository;
-import com.alsomeb.shopletapi.service.EmailService;
 import com.alsomeb.shopletapi.service.ShoppingListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +20,9 @@ public class ShoppingListServiceImpl implements ShoppingListService {
 
     private final ShoppingListRepository shoppingListRepository;
 
-    private final EmailService emailService;
-
     @Autowired
-    public ShoppingListServiceImpl(ShoppingListRepository shoppingListRepository, EmailService emailService) {
+    public ShoppingListServiceImpl(ShoppingListRepository shoppingListRepository) {
         this.shoppingListRepository = shoppingListRepository;
-        this.emailService = emailService;
     }
 
     // CRUD + getListsOrderByDateDesc()
@@ -80,9 +76,6 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         // Ny Skapande
         final ShoppingListEntity shoppingListEntity = shoppingListDTOToEntity(shoppingListDto);
         final ShoppingListEntity savedEntity = shoppingListRepository.save(shoppingListEntity);
-
-        // Skicka Mail TODO FÖRBÄTTRA
-        //emailService.sendEmail("alsomeb@gmail.com", "Shoplet Test", "New ShoppingList added");
 
         return shoppingListEntityToDTO(savedEntity);
     }
