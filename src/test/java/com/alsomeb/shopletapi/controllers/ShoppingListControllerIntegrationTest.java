@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc // will take care of creating the mock object for us
 @ActiveProfiles("h2db")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD) // CREATES/CLEAN DB Before Each Test, startar om context för varje test
-public class ShoppingListEntityControllerIntegrationTest {
+public class ShoppingListControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
