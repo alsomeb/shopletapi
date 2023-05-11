@@ -26,14 +26,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Properties;
 
 @Configuration
-@PropertySource("classpath:application-mail.properties")
+//@PropertySource("classpath:application-mail.properties")
 public class ShopletConfig {
 
+    /*
     @Value("${emailUsername}")
     private String emailUserName;
 
     @Value("${emailPassword}")
     private String emailPassword;
+     */
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -48,6 +50,7 @@ public class ShopletConfig {
         };
     }
 
+    /*
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
@@ -65,5 +68,6 @@ public class ShopletConfig {
 
         return mailSender;
     }
+     */
 
 }
