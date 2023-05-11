@@ -5,3 +5,7 @@
     <li>No API security/auth as of now, that is a future project to learn and implement</li>
     <li>PostgreSQL DB & H2</li>
 </ul>
+
+
+
+<a href="https://github.com/alsomeb/Shoplet">Frontend GitHub Repo</a>
