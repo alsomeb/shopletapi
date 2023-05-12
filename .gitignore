@@ -37,4 +37,4 @@ out/
 .vscode/
 src/main/resources/application-mail.properties
 Dockerfile
-/security/
+src/main/java/com/alsomeb/shopletapi/security
