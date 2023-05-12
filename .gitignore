@@ -36,6 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 src/main/resources/application-mail.properties
-src/main/resources/application-sec.properties
+src/main/resources/application-test.properties
 Dockerfile
 src/main/java/com/alsomeb/shopletapi/security
