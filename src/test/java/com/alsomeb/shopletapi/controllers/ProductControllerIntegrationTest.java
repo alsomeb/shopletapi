@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -35,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("h2db")
+@ActiveProfiles("test")
 public class ProductControllerIntegrationTest {
 
     @Autowired
@@ -46,6 +47,9 @@ public class ProductControllerIntegrationTest {
 
     @MockBean
     private ShoppingListRepository shoppingListRepository;
+
+    @Value("${token}")
+    private String token;
 
 
     // Här mockar vi datan ist
@@ -65,7 +69,8 @@ public class ProductControllerIntegrationTest {
         String url = "/api/v1/shoppinglists/" + shoppingListEntity.getId() + "/products";
 
         mockMvc.perform(MockMvcRequestBuilders.post(url)
-                .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token)
                 .content(productJSON))
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -100,6 +105,7 @@ public class ProductControllerIntegrationTest {
 
         mockMvc.perform(MockMvcRequestBuilders.put(url)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token)
                         .content(productJSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -122,7 +128,8 @@ public class ProductControllerIntegrationTest {
         ProductEntity foundProduct = testProductEntity();
         when(productRepository.findById(foundProduct.getId())).thenReturn(Optional.of(foundProduct));
 
-        mockMvc.perform(MockMvcRequestBuilders.get(url))
+        mockMvc.perform(MockMvcRequestBuilders.get(url)
+                        .header("Authorization", token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(
@@ -141,7 +148,8 @@ public class ProductControllerIntegrationTest {
     public void testFindProductByIdReturns404IfNotFound() throws Exception {
         long productId = 1337L;
         String url = "/api/v1/products/" + productId;
-        mockMvc.perform(MockMvcRequestBuilders.get(url))
+        mockMvc.perform(MockMvcRequestBuilders.get(url)
+                        .header("Authorization", token))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath(
@@ -170,7 +178,8 @@ public class ProductControllerIntegrationTest {
 
         String url = "/api/v1/shoppinglists/" + shoppingListEntity.getId() + "/products";
 
-        mockMvc.perform(MockMvcRequestBuilders.get(url))
+        mockMvc.perform(MockMvcRequestBuilders.get(url)
+                        .header("Authorization", token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(productSetJSON));
@@ -189,7 +198,8 @@ public class ProductControllerIntegrationTest {
 
         String url = "/api/v1/shoppinglists/" + shoppingListEntity.getId() + "/products";
 
-        mockMvc.perform(MockMvcRequestBuilders.get(url))
+        mockMvc.perform(MockMvcRequestBuilders.get(url)
+                        .header("Authorization", token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("[]"));
@@ -204,7 +214,8 @@ public class ProductControllerIntegrationTest {
         String url = "/api/v1/products/" + foundProduct.getId();
         when(productRepository.findById(foundProduct.getId())).thenReturn(Optional.of(foundProduct));
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(url))
+        mockMvc.perform(MockMvcRequestBuilders.delete(url)
+                        .header("Authorization", token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(
@@ -218,7 +229,8 @@ public class ProductControllerIntegrationTest {
         long productId = 1337L;
         String url = "/api/v1/products/" + productId;
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(url))
+        mockMvc.perform(MockMvcRequestBuilders.delete(url)
+                        .header("Authorization", token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(
@@ -226,4 +238,50 @@ public class ProductControllerIntegrationTest {
 
         verify(productRepository, times(1)).findById(productId);
     }
+
+    @Test
+    public void testThatDeleteNotPossibleWithNoToken() throws Exception {
+        long productId = 1337L;
+        String url = "/api/v1/products/" + productId;
+        mockMvc.perform(MockMvcRequestBuilders.delete(url))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testFindAllProductsByShoppingListIdNotPossibleWithoutToken() throws Exception {
+        ShoppingListEntity shoppingListEntity = testShoppingListEntity();
+        String url = "/api/v1/shoppinglists/" + shoppingListEntity.getId() + "/products";
+        mockMvc.perform(MockMvcRequestBuilders.get(url))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testFindProductByIdNotPossibleWithoutToken() throws Exception {
+        long productId = 1337L;
+        String url = "/api/v1/products/" + productId;
+        mockMvc.perform(MockMvcRequestBuilders.get(url))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testThatProductIsUpdatedNotPossibleWithoutToken() throws Exception {
+        String url = "/api/v1/products/" + testProductEntity().getId();
+
+        mockMvc.perform(MockMvcRequestBuilders.put(url))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testThatProductIsSavedNotPossibleWithoutToken() throws Exception {
+        String url = "/api/v1/products/" + testProductEntity().getId();
+
+        mockMvc.perform(MockMvcRequestBuilders.post(url))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
 }
