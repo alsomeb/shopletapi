@@ -60,8 +60,6 @@ public class ShoppingListControllerIntegrationTest {
 
     // ANVÄNDER EJ MOCKING I DESSA TESTER, IMPL I ProductControllerIntegrationTest
 
-    // TODO SAMMA SOM PRODUCTIT TESTS MED TOKEN
-
     @Test
     public void testThatShoppingListIsCreated201() throws Exception {
         // Blir utan ID här men vi får id när vi .save() mha Service
