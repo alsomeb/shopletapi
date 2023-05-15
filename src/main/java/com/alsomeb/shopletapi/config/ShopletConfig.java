@@ -45,9 +45,7 @@ public class ShopletConfig {
                 registry.addMapping("/**")
                         .allowedOriginPatterns("*")
                         .allowedMethods("*")
-                        .allowedHeaders("*")
-                        .exposedHeaders("Authorization")
-                        .allowCredentials(true);
+                        .allowedHeaders("*");
             }
         };
     }

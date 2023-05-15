@@ -10,7 +10,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -53,8 +52,11 @@ public class ShoppingListControllerIntegrationTest {
     @Autowired
     private ShoppingListRepository shoppingListRepository;
 
+    /*
     @Value("${token}")
     private String token;
+
+     */
 
     private final String apiRootURL = "/api/v1/shoppinglists";
 
@@ -79,8 +81,7 @@ public class ShoppingListControllerIntegrationTest {
         // Vi anv put metoden för att skapa / upd
         mockMvc.perform(MockMvcRequestBuilders.put(apiRootURL + "/" + dto.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                        .content(listJSON)
-                        .header("Authorization", token))
+                        .content(listJSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath(
                         "$.id").value(dto.getId()))
@@ -114,7 +115,6 @@ public class ShoppingListControllerIntegrationTest {
 
         mockMvc.perform(MockMvcRequestBuilders.put(apiRootURL + "/" + savedDto.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", token)
                         .content(listJSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(
@@ -129,16 +129,14 @@ public class ShoppingListControllerIntegrationTest {
     public void testThatListShoppingListsReturns200EmptyWhenNothing() throws Exception {
         shoppingListRepository.deleteAll(); // Så vi inte får conflict med data seed från data.sql, använder ej mocking här
 
-        mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL)
-                        .header("Authorization", token))
+        mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string("[]"));
     }
 
     @Test
     public void testFindByIdReturn404IfShoppingListNotFound() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL.concat("/1"))
-                        .header("Authorization", token))
+        mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL.concat("/1")))
                 .andExpect(status().isNotFound());
     }
 
@@ -147,8 +145,7 @@ public class ShoppingListControllerIntegrationTest {
         final ShoppingListDto shoppingListDto = testShoppingListDTO();
         var target = shoppingListService.save(shoppingListDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL.concat("/" + target.getId()))
-                        .header("Authorization", token))
+        mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL.concat("/" + target.getId())))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(
                         "$.id").value(target.getId()))
@@ -163,8 +160,7 @@ public class ShoppingListControllerIntegrationTest {
         final ShoppingListDto shoppingListDto = testShoppingListDTO();
         var target = shoppingListService.save(shoppingListDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL)
-                        .header("Authorization", token))
+        mockMvc.perform(MockMvcRequestBuilders.get(apiRootURL))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(
                         // $.[0].id == accesses the first element in the list
@@ -202,8 +198,7 @@ public class ShoppingListControllerIntegrationTest {
         shoppingListService.save(random);
         shoppingListService.save(targetFirst);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(requestURL)
-                        .header("Authorization", token))
+        mockMvc.perform(MockMvcRequestBuilders.get(requestURL))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(
                         "$.[0].added").value(targetFirst.getAdded().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
@@ -212,8 +207,7 @@ public class ShoppingListControllerIntegrationTest {
 
     @Test
     public void testDeleteListThatDoesntExistReturns200WithDeleteResponseFalse() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete(apiRootURL + "/521521515")
-                        .header("Authorization", token))
+        mockMvc.perform(MockMvcRequestBuilders.delete(apiRootURL + "/521521515"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(
                         "$.deleted").value(false));
@@ -224,8 +218,7 @@ public class ShoppingListControllerIntegrationTest {
         final ShoppingListDto shoppingListDto = testShoppingListDTO();
         var target = shoppingListService.save(shoppingListDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(apiRootURL + "/" + target.getId())
-                        .header("Authorization", token))
+        mockMvc.perform(MockMvcRequestBuilders.delete(apiRootURL + "/" + target.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(
                         "$.deleted").value(true));

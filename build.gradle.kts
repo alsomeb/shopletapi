@@ -33,8 +33,8 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2") // För att Serialisera LocalDateTime
     implementation ("org.springframework.boot:spring-boot-starter-mail") // Spring Mailing Service
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0") // swagger UI
-    implementation("org.springframework.boot:spring-boot-starter-security") // Spring Sec
-    testImplementation("org.springframework.security:spring-security-test") // Spring Sec
+    //implementation("org.springframework.boot:spring-boot-starter-security") // Spring Sec
+    //testImplementation("org.springframework.security:spring-security-test") // Spring Sec
 }
 
 tasks.withType<Test> {
